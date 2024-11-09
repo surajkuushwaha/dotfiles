@@ -1,0 +1,42 @@
+layout {
+    cwd "/home/suraj/Work/repos"
+    tab name="DEV SERVER" hide_floating_panes=true {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane split_direction="vertical" {
+            pane cwd="cx-saas-server" size="50%" command="npm" {
+                args "run" "dev"
+            }
+            pane size="50%" stacked=true {
+                pane cwd="cx-saas-dashboard" expanded=true command="npm"{
+                    args "run" "dev"
+                }
+                pane cwd="saas-super-admin" command="pnpm"{
+                        args "dev"
+                    }
+            }
+        }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+}
+keybinds {
+    shared {
+        bind "Alt 1" { Run "git" "pull"; }
+        bind "Alt 2" { Run "git" "status"; }
+        bind "Alt 3" { Run "git" "diff"; }
+    }
+    pane {
+        bind "h" "Left" { MoveFocus "Left"; }
+        bind "l" "Right" { MoveFocus "Right"; }
+        bind "j" "Down" { MoveFocus "Down"; }
+        bind "k" "Up" { MoveFocus "Up"; }
+        bind "p" { SwitchFocus; }
+    }
+}
+
+theme "catppuccin-mocha"
+
+

@@ -1,0 +1,28 @@
+layout {
+    cwd "/home/suraj/Work/repos"
+    tab name="DEV MICROSERVICES" {
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        pane split_direction="vertical" {
+            pane cwd="cx-analytics-backend" size="50%"  name="cx-analytics-backend" command="npm" start_suspended=true{
+                args "run" "dev"
+            }
+            pane cwd="cx-creator-services" size="50%" name="cx-creator-services" command="npm" start_suspended=true{
+                args "run" "dev"
+            }
+        }
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+}
+keybinds {
+    shared {
+        bind "Alt 1" { Run "git" "pull"; }
+        bind "Alt 2" { Run "git" "status"; }
+        bind "Alt 3" { Run "git" "diff"; }
+    }
+}
+
+theme "catppuccin-mocha"
