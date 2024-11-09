@@ -1,5 +1,5 @@
 layout {
-    cwd "/home/suraj/Work/repos"
+    cwd "/home/suraj/CultureX/repos"
     tab name="DEV SERVER" hide_floating_panes=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
