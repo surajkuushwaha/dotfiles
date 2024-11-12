@@ -80,6 +80,8 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(git z zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
+source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
+source <(fzf --zsh)
 
 # User configuration
 
@@ -98,7 +100,7 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
+
 
 # now load zsh-syntax-highlighting plugin
 
