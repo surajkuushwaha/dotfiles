@@ -81,6 +81,8 @@ plugins=(git z zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
+# Set up fzf key bindings and fuzzy completion
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 source <(fzf --zsh)
 
 # User configuration
@@ -115,10 +117,21 @@ source <(fzf --zsh)
 alias dev="npm run dev"
 alias ddev="doppler run --watch  -- npm run dev"
 alias pdev="pnpm dev"
+alias inano='nano $(fzf --preview="batcat --color=always {}")'
+
+# git alias
+alias gbc='git checkout -b'
+alias gst='git status'
+alias gl='git log --oneline --graph --decorate'
+alias glo='git log --oneline'
+alias igbc='git checkout $(git branch -a | fzf)'
+
 wooshOrigin(){
         git checkout -b $1 &&
         git push -u origin HEAD
 }
+
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -143,3 +156,14 @@ case ":$PATH:" in
 esac
 # pnpm end
 export PATH=$HOME/.local/bin:$PATH
+
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf "$@" --preview 'tree -C {} | head -200' ;;
+    *)            fzf "$@" ;;
+  esac
+}
+
