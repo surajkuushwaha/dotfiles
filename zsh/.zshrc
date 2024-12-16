@@ -149,13 +149,13 @@ gitlogdate() {
   
 
   
-  # Get global user name and email from git config
-  local user_name = $(git config user.name)
   # Extract author email if provided
   local author_email=$(git config user.email)
   if [ -n "$3" ]; then
     author_email="$3"
   fi
+
+  echo "git logs for user: $author_email \n"
   
   # Get commits for the specified date
   git log $branch_option --after="$1 00:00:00" --before="$1 23:59:59" \
@@ -167,11 +167,11 @@ gitlogdate() {
     fi
     # echo "[$branches] $short_hash \t:\t $message ($author_name <$author_email>)"
     # echo "[$branches] \t $short_hash :\t $message"
-    echo "[$branches] \t: $message"
+    echo "[$branches] : $message"
   done
   
   # Print user info after the first commit
-  echo -e "\nGit User Info: $user_name <$author_email>"
+  # echo -e "\nGit User Info: $user_name <$author_email>"
 }
 
 
