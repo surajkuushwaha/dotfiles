@@ -119,7 +119,7 @@ alias ddev="doppler run --watch  -- npm run dev"
 alias pdev="pnpm dev"
 alias inano='nano $(fzf --preview="batcat --color=always {}")'
 alias ls="eza --icons=always"
-alias cd="z"
+# alias cd="z"
 
 
 # git alias
@@ -134,6 +134,47 @@ wooshOrigin(){
         git checkout -b $1 &&
         git push -u origin HEAD
 }
+
+gitlogdate() {
+  if [ -z "$1" ]; then
+    echo "Usage: gitlogdate YYYY-MM-DD [branch] [author_email]"
+    return 1
+  fi
+  
+  # Extract branch if provided, default to all branches
+  local branch_option="--all"
+  if [ -n "$2" ]; then
+    branch_option="$2"
+  fi
+  
+
+  
+  # Get global user name and email from git config
+  local user_name = $(git config user.name)
+  # Extract author email if provided
+  local author_email=$(git config user.email)
+  if [ -n "$3" ]; then
+    author_email="$3"
+  fi
+  
+  # Get commits for the specified date
+  git log $branch_option --after="$1 00:00:00" --before="$1 23:59:59" \
+    --author="$author_email" --pretty=format:"%H|%h|%s|%an|%ae" | while IFS='|' read -r commit_hash short_hash message author_name author_email; do
+    # Get branch names for this commit
+    branches=$(git branch -r --contains $commit_hash | sed 's/^[[:space:]]*origin\///' | tr '\n' ',' | sed 's/,$//')
+    if [ -z "$branches" ]; then
+      branches="HEAD"
+    fi
+    # echo "[$branches] $short_hash \t:\t $message ($author_name <$author_email>)"
+    # echo "[$branches] \t $short_hash :\t $message"
+    echo "[$branches] \t: $message"
+  done
+  
+  # Print user info after the first commit
+  echo -e "\nGit User Info: $user_name <$author_email>"
+}
+
+
 
 
 # keybindings
