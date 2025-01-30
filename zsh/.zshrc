@@ -127,13 +127,15 @@ alias gbc='git checkout -b'
 alias gst='git status'
 alias gl='git log --oneline --graph --decorate'
 alias glo='git log --oneline'
-alias igbc='git checkout $(git branch -a | fzf)'
+alias igbc='git checkout $(git for-each-ref --sort=-committerdate --format "%(refname:short)" refs/heads/ | fzf)'
 
 
 wooshOrigin(){
         git checkout -b $1 &&
         git push -u origin HEAD
 }
+
+alias cxlog='multi_repo_gitlog'
 
 gitlogdate() {
   if [ -z "$1" ]; then
@@ -158,7 +160,7 @@ gitlogdate() {
   echo "git logs for user: $author_email \n"
   
   # Get commits for the specified date
-  git log $branch_option --after="$1 00:00:00" --before="$1 23:59:59" \
+  git log $branch_option --after="$1 00:00:00" --before="$1 23:59:59" --date=local \
     --author="$author_email" --pretty=format:"%H|%h|%s|%an|%ae" | while IFS='|' read -r commit_hash short_hash message author_name author_email; do
     # Get branch names for this commit
     branches=$(git branch -r --contains $commit_hash | sed 's/^[[:space:]]*origin\///' | tr '\n' ',' | sed 's/,$//')
@@ -174,8 +176,55 @@ gitlogdate() {
   # echo -e "\nGit User Info: $user_name <$author_email>"
 }
 
+function multi_repo_gitlog {
+    if [ -z "$1" ]; then
+        echo "Usage: multi_repo_gitlog YYYY-MM-DD [author_email]"
+        return 1
+    fi
 
+    # Set date and author email
+    date="$1"
+    author_email=""
+    if [ -n "$2" ]; then
+        author_email="$2"
+    fi
 
+    # Define specific repository paths
+    repos=(
+        "/home/suraj/CultureX/repos/cx-saas-server"
+        "/home/suraj/CultureX/repos/cx-creator-services"
+        "/home/suraj/CultureX/repos/cx-analytics-backend"
+        "/home/suraj/CultureX/repos/cx-saas-dashboard"
+        "/home/suraj/CultureX/repos/saas-super-admin"
+    )
+
+    # Save current directory
+    original_dir=$(pwd)
+
+    # Loop through each repository
+    for repo_path in "${repos[@]}"; do
+        if [ -d "$repo_path/.git" ]; then
+            # Get repository name
+            repo_name=$(basename "$repo_path")
+            
+            # Change to repository directory
+            cd "$repo_path"
+            
+            # Print repository separator
+            echo -e "\n================================================"
+            echo "Repository: $repo_name"
+            echo "================================================"
+            
+            # Call gitlogdate function
+            gitlogdate "$date" "--all" "$author_email"
+            
+            # Return to original directory
+            cd "$original_dir"
+        else
+            echo -e "\nWarning: Repository not found at $repo_path"
+        fi
+    done
+}
 
 # keybindings
 
@@ -190,7 +239,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-PATH=~/.console-ninja/.bin:$PATH
+
 PATH=~/.console-ninja/.bin:$PATH
 # bun completions
 [ -s "/home/suraj/.bun/_bun" ] && source "/home/suraj/.bun/_bun"
@@ -218,3 +267,4 @@ _fzf_comprun() {
   esac
 }
 
+export AWS_PROFILE=default

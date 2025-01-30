@@ -1,18 +1,18 @@
 layout {
     cwd "/home/suraj/CultureX/repos"
-    tab name="DEV SERVER" hide_floating_panes=true {
+    tab name="SERVER" hide_floating_panes=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
         pane split_direction="vertical" {
-            pane cwd="cx-saas-server" size="70%" command="doppler" {
+            pane cwd="cx-saas-server" name="Server" size="70%" command="doppler" {
                 args "run" "--watch"  "--" "npm" "run" "dev"
             }
             pane size="30%" stacked=true {
-                pane cwd="cx-saas-dashboard" expanded=true command="npm"{
+                pane cwd="cx-saas-dashboard" name="Dashboard" expanded=true command="npm"{
                     args "run" "dev"
                 }
-                pane cwd="saas-super-admin" command="pnpm"{
+                pane cwd="saas-super-admin" name="Super Admin" command="pnpm"{
                     args "dev"
                 }
             }
@@ -21,16 +21,24 @@ layout {
             plugin location="zellij:status-bar"
         }
     }
-    tab name="DEV MICROSERVICES" {
+    tab name="MICROSERVICES" {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
         pane split_direction="vertical" {
-            pane cwd="cx-analytics-backend" size="65%"  name="cx-analytics-backend" command="doppler"{
+            pane cwd="cx-analytics-backend" size="65%"  name="Analytics" command="doppler"{
                 args "run" "--watch"  "--" "npm" "run" "dev"
             }
-            pane cwd="cx-creator-services" size="35%" name="cx-creator-services" command="doppler"{
-                args "run" "--watch"  "--" "npm" "run" "dev"
+            pane size="35%" stacked=true {
+                pane cwd="cx-creator-services" expanded=true  name="Global Storage" command="doppler"{
+                    args "run" "--watch"  "--" "npm" "run" "dev"
+                }
+                pane cwd="cx-pdf-generation"  name="PDF Service" command="npm" start_suspended=true {
+                    args "run" "dev"
+                }
+                pane cwd="cx-worker"  name="Worker" command="doppler" start_suspended=true {
+                    args "run" "--watch"  "--" "npm" "run" "dev"
+                }
             }
         }
         pane size=2 borderless=true {
