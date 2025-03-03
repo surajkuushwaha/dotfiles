@@ -137,96 +137,6 @@ wooshOrigin(){
         git push -u origin HEAD
 }
 
-alias cxlog='multi_repo_gitlog'
-
-gitlogdate() {
-  if [ -z "$1" ]; then
-    echo "Usage: gitlogdate YYYY-MM-DD [branch] [author_email]"
-    return 1
-  fi
-  
-  # Extract branch if provided, default to all branches
-  local branch_option="--all"
-  if [ -n "$2" ]; then
-    branch_option="$2"
-  fi
-  
-
-  
-  # Extract author email if provided
-  local author_email=$(git config user.email)
-  if [ -n "$3" ]; then
-    author_email="$3"
-  fi
-
-  echo "git logs for user: $author_email \n"
-  
-  # Get commits for the specified date
-  git log $branch_option --after="$1 00:00:00" --before="$1 23:59:59" --date=local \
-    --author="$author_email" --pretty=format:"%H|%h|%s|%an|%ae" | while IFS='|' read -r commit_hash short_hash message author_name author_email; do
-    # Get branch names for this commit
-    branches=$(git branch -r --contains $commit_hash | sed 's/^[[:space:]]*origin\///' | tr '\n' ',' | sed 's/,$//')
-    if [ -z "$branches" ]; then
-      branches="HEAD"
-    fi
-    # echo "[$branches] $short_hash \t:\t $message ($author_name <$author_email>)"
-    # echo "[$branches] \t $short_hash :\t $message"
-    echo "[$branches] : $message"
-  done
-  
-  # Print user info after the first commit
-  # echo -e "\nGit User Info: $user_name <$author_email>"
-}
-
-function multi_repo_gitlog {
-    if [ -z "$1" ]; then
-        echo "Usage: multi_repo_gitlog YYYY-MM-DD [author_email]"
-        return 1
-    fi
-
-    # Set date and author email
-    date="$1"
-    author_email=""
-    if [ -n "$2" ]; then
-        author_email="$2"
-    fi
-
-    # Define specific repository paths
-    repos=(
-        "/home/suraj/CultureX/repos/cx-saas-server"
-        "/home/suraj/CultureX/repos/cx-creator-services"
-        "/home/suraj/CultureX/repos/cx-analytics-backend"
-        "/home/suraj/CultureX/repos/cx-saas-dashboard"
-        "/home/suraj/CultureX/repos/saas-super-admin"
-    )
-
-    # Save current directory
-    original_dir=$(pwd)
-
-    # Loop through each repository
-    for repo_path in "${repos[@]}"; do
-        if [ -d "$repo_path/.git" ]; then
-            # Get repository name
-            repo_name=$(basename "$repo_path")
-            
-            # Change to repository directory
-            cd "$repo_path"
-            
-            # Print repository separator
-            echo -e "\n================================================"
-            echo "Repository: $repo_name"
-            echo "================================================"
-            
-            # Call gitlogdate function
-            gitlogdate "$date" "--all" "$author_email"
-            
-            # Return to original directory
-            cd "$original_dir"
-        else
-            echo -e "\nWarning: Repository not found at $repo_path"
-        fi
-    done
-}
 
 # keybindings
 
@@ -267,6 +177,94 @@ _fzf_comprun() {
     cd)           fzf "$@" --preview 'tree -C {} | head -200' ;;
     *)            fzf "$@" ;;
   esac
+}
+
+
+alias cxlog='log_commits'
+# Function to log commits in specified repos for a given date
+# Example usage:
+# log_commits 2025-03-03
+log_commits() {
+    # Check if date is provided
+    if [ -z "$1" ]; then
+        echo "Please provide a date in format YYYY-MM-DD"
+        return 1
+    fi
+    
+    # Input date in IST
+    local input_date="$1"
+    local email="suraj.kushwaha@culturex.in"
+    if [ -n "$2" ]; then
+        email="$2"
+    fi
+    
+    # Convert IST date to UTC date range
+    # IST is UTC+5:30, so subtract 5:30 hours for start and end of day
+    local start_date=$(date -u -d "$input_date 00:00:00 IST -5 hours -30 minutes" +"%Y-%m-%d %H:%M:%S")
+    local end_date=$(date -u -d "$input_date 23:59:59 IST -5 hours -30 minutes" +"%Y-%m-%d %H:%M:%S")
+    
+    # List of repositories
+    local repos=(
+        "/home/suraj/CultureX/repos/cx-saas-server"
+        "/home/suraj/CultureX/repos/cx-creator-services"
+        "/home/suraj/CultureX/repos/cx-analytics-backend"
+        "/home/suraj/CultureX/repos/cx-saas-dashboard"
+        "/home/suraj/CultureX/repos/saas-super-admin"
+    )
+    
+    # Loop through each repository
+    for repo in "${repos[@]}"; do
+        if [ -d "$repo/.git" ]; then
+            # echo "---"
+            # Get repo name from path
+            local repo_name=$(basename "$repo")
+            
+            # Change to repository directory
+            pushd "$repo" > /dev/null
+            
+            # List commits within date range by the specified email
+            local commits=$(git log --all --since="$start_date" --until="$end_date" --author="$email" --pretty=format:"[%h] [%an] [%ad] [%s] [%b]" --date=iso --branches)
+            
+            if [ -n "$commits" ]; then
+                echo "[$repo_name] [$input_date] [$email]"
+                
+                # Process each commit
+                echo "$commits" | while IFS= read -r commit_line; do
+                    # Extract commit hash
+                    local commit_hash=$(echo "$commit_line" | awk -F'[][]' '{print $2}')
+                    
+                    # Get commit message
+                    local commit_msg=$(echo "$commit_line" | awk -F'[][]' '{print $8}')
+                    
+                    # Get branch for this commit
+                    local branches=$(git branch --contains "$commit_hash" | sed 's/^\*\?\s*//')
+                    
+                    # If no local branches contain this commit, check remote branches
+                    if [ -z "$branches" ]; then
+                        branches=$(git branch -r --contains "$commit_hash" | sed 's/^\*\?\s*//' | sed 's/origin\///')
+                    fi
+                    
+                    # If still no branches, mark as detached
+                    if [ -z "$branches" ]; then
+                        branches="detached"
+                    fi
+                    
+                    # Print branch and commit info
+                    echo "[$branches] : $commit_msg"
+                done
+            else
+                echo "[$repo_name] [$input_date] [$email]"
+                echo "No commits found"
+            fi
+            
+            popd > /dev/null
+            echo "---"
+        else
+            # echo "---"
+            echo "Repository not found or not a git repository: $repo"
+            echo "---"
+        fi
+    done
 }
 
 export AWS_PROFILE=default
