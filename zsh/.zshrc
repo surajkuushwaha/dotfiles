@@ -120,6 +120,8 @@ alias pdev="pnpm dev"
 alias inano='nano $(fzf --preview="batcat --color=always {}")'
 alias ls="eza --icons=always"
 # alias cd="z"
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
 
 
 # git alias
@@ -240,7 +242,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
-PATH=~/.console-ninja/.bin:$PATH
+
 # bun completions
 [ -s "/home/suraj/.bun/_bun" ] && source "/home/suraj/.bun/_bun"
 
@@ -268,3 +270,4 @@ _fzf_comprun() {
 }
 
 export AWS_PROFILE=default
+
