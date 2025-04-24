@@ -202,6 +202,9 @@ log_commits() {
     # IST is UTC+5:30, so subtract 5:30 hours for start and end of day
     local start_date=$(date -u -d "$input_date 00:00:00 IST -5 hours -30 minutes" +"%Y-%m-%d %H:%M:%S")
     local end_date=$(date -u -d "$input_date 23:59:59 IST -5 hours -30 minutes" +"%Y-%m-%d %H:%M:%S")
+
+    echo $start_date
+    echo $end_date
     
     # List of repositories
     local repos=(
