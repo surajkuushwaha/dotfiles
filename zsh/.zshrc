@@ -272,3 +272,4 @@ log_commits() {
 
 export AWS_PROFILE=default
 
+export SSH_AUTH_SOCK=/home/suraj/snap/bitwarden/current/.bitwarden-ssh-agent.sock
