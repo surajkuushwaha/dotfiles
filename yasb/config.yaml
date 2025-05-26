@@ -36,8 +36,14 @@ bars:
       bottom: 6
       right: 6
     widgets:
-      left: ["home", "wallpaper", "media", "notifications"]
-      center: ["glazewm_workspaces", "active_window"]
+      left: [
+          "home",
+          # "wallpaper",
+          "media",
+          # "notifications",
+          "active_window",
+        ]
+      center: ["glazewm_workspaces"]
       right: ["cava", "weather", "volume", "clock", "battery", "power_menu"]
 widgets:
   glazewm_workspaces:
