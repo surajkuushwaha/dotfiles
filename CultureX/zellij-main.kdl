@@ -1,19 +1,33 @@
 layout {
-    cwd "/home/suraj/CultureX/repos"
-    tab name="SERVER" hide_floating_panes=true {
+    cwd "$HOME/CultureX/repos"
+    tab name="BACKEND" hide_floating_panes=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
-        pane split_direction="vertical" {
-            pane cwd="cx-saas-server" name="Server" size="70%" command="doppler" {
-                args "run" "--watch"  "--" "npm" "run" "dev"
+        pane split_direction="horizontal" {
+            // Main Server (65% width)
+            pane cwd="cx-saas-server" name="Server" size="65%" command="doppler" {
+                args "run" "--watch" "--" "npm" "run" "dev"
             }
-            pane size="30%" stacked=true {
-                pane cwd="cx-saas-dashboard" name="Dashboard" expanded=true command="npm"{
-                    args "run" "dev"
+            
+            // Microservices Sidebar (35% width, vertically split)
+            pane size="35%" split_direction="vertical" {
+                // Analytics Pane (Top 65% height of the sidebar)
+                pane cwd="cx-analytics-backend" size="65%" name="Analytics" command="doppler"{
+                    args "run" "--watch" "--" "npm" "run" "dev"
                 }
-                pane cwd="saas-super-admin" name="Super Admin" command="pnpm"{
-                    args "dev"
+                
+                // Stacked Microservices (Bottom 35% height of the sidebar)
+                pane size="35%" stacked=true {
+                    pane cwd="cx-creator-services" expanded=true name="Global Storage" command="doppler"{
+                        args "run" "--watch" "--" "npm" "run" "dev"
+                    }
+                    pane cwd="cx-pdf-generation" name="PDF Service" command="npm" start_suspended=true {
+                        args "run" "dev"
+                    }
+                    pane cwd="cx-worker" name="Worker" command="doppler" start_suspended=true {
+                        args "run" "--watch" "--" "npm" "run" "dev"
+                    }
                 }
             }
         }
@@ -21,36 +35,26 @@ layout {
             plugin location="zellij:status-bar"
         }
     }
-    tab name="MICROSERVICES" {
+    
+    // FRONTENDS Tab - Now split vertical (side-by-side)
+    tab name="FRONTENDS" hide_floating_panes=true {
         pane size=1 borderless=true {
             plugin location="zellij:tab-bar"
         }
+        // Frontends in a vertical split (side-by-side)
         pane split_direction="vertical" {
-            pane cwd="cx-analytics-backend" size="65%"  name="Analytics" command="doppler"{
-                args "run" "--watch"  "--" "npm" "run" "dev"
+            // Dashboard (Left side, 50% width)
+            pane cwd="cx-saas-dashboard" name="Dashboard" size="50%" command="npm" start_suspended=true {
+                args "run" "dev"
             }
-            pane size="35%" stacked=true {
-                pane cwd="cx-creator-services" expanded=true  name="Global Storage" command="doppler"{
-                    args "run" "--watch"  "--" "npm" "run" "dev"
-                }
-                pane cwd="cx-pdf-generation"  name="PDF Service" command="npm" start_suspended=true {
-                    args "run" "dev"
-                }
-                pane cwd="cx-worker"  name="Worker" command="doppler" start_suspended=true {
-                    args "run" "--watch"  "--" "npm" "run" "dev"
-                }
+            // Super Admin (Right side, 50% width)
+            pane cwd="saas-super-admin" name="Super Admin" size="50%" command="pnpm" start_suspended=true {
+                args "dev"
             }
         }
         pane size=2 borderless=true {
             plugin location="zellij:status-bar"
         }
-    }
-}
-keybinds {
-    shared {
-        bind "Alt 1" { Run "git" "pull"; }
-        bind "Alt 2" { Run "git" "status"; }
-        bind "Alt 3" { Run "git" "diff"; }
     }
 }
 
