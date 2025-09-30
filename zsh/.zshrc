@@ -119,9 +119,6 @@ alias ddev="doppler run --watch  -- npm run dev"
 alias pdev="pnpm dev"
 alias inano='nano $(fzf --preview="batcat --color=always {}")'
 alias ls="eza --icons=always"
-# alias cd="z"
-alias pbcopy='xclip -selection clipboard'
-alias pbpaste='xclip -selection clipboard -o'
 
 
 # git alias
@@ -138,10 +135,6 @@ wooshOrigin(){
 }
 
 
-# keybindings
-
-bindkey '^[[A' history—search-backward
-bindkey '^[[B' history-search-forward
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -284,3 +277,10 @@ fi
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+cx() {
+  local script="$HOME/Personal/dotfiles/CultureX/start-dev.sh"
+  "$script" "$@"
+}
+
+export PATH=$PATH:/Users/suraj/.spicetify
