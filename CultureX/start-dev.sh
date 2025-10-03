@@ -3,6 +3,7 @@
 SESSION="cx-dev"
 DEV_MODE=false
 TMUX_MODE=false
+TEAMS_MODE=false
 
 # --- Colors (Catppuccin Mocha) ---
 ROSEWATER='\033[38;2;245;224;220m'
@@ -49,10 +50,18 @@ for arg in "$@"; do
     TMUX_MODE=true
   fi
 
+  if [[ "$arg" == "--teams" ]]; then
+    TEAMS_MODE=true
+  fi
+
   if [[ "$1" == "--close" ]]; then
-    if [[ "$2" == "--dev" ]]; then
+    if [[ "$*" == *"--dev"* ]]; then
       echo -e "${TEAL}→ Closing VS Code...${NC}"
       osascript -e 'quit app "Visual Studio Code"' 2>/dev/null && echo -e "${GREEN}✓ VS Code closed${NC}" || echo -e "${YELLOW}⚠ VS Code not running${NC}"
+    fi
+    if [[ "$*" == *"--teams"* ]]; then
+      echo -e "${TEAL}→ Closing Microsoft Teams...${NC}"
+      osascript -e 'quit app "Microsoft Teams"' 2>/dev/null && echo -e "${GREEN}✓ Microsoft Teams closed${NC}" || echo -e "${YELLOW}⚠ Microsoft Teams not running${NC}"
     fi
     tmux kill-session -t $SESSION 2>/dev/null && echo -e "${GREEN}✓ Session closed${NC}" || echo -e "${YELLOW}⚠ No session to close${NC}"
     exit 0
@@ -78,17 +87,27 @@ if ! $TMUX_MODE; then
   echo -e "${RED}Error: --tmux flag is required to start or attach to tmux session${NC}"
   echo ""
   echo -e "${YELLOW}Usage:${NC}"
-  echo -e "  ${GREEN}$0 --tmux${NC}           Start/attach to tmux session"
-  echo -e "  ${GREEN}$0 --tmux --dev${NC}     Start/attach to tmux session and run dev commands"
-  echo -e "  ${GREEN}$0 --close${NC}          Close the tmux session"
-  echo -e "  ${GREEN}$0 --close --dev${NC}    Close the tmux session and VS Code"
-  echo -e "  ${GREEN}$0 --list-branches${NC}  List current branches for all repos"
+  echo -e "  ${GREEN}$0 --tmux${NC}                Start/attach to tmux session"
+  echo -e "  ${GREEN}$0 --tmux --dev${NC}          Start/attach to tmux session and run dev commands"
+  echo -e "  ${GREEN}$0 --tmux --teams${NC}        Start/attach to tmux session and open Microsoft Teams"
+  echo -e "  ${GREEN}$0 --tmux --dev --teams${NC}  Start/attach to tmux session, run dev commands, and open Teams"
+  echo -e "  ${GREEN}$0 --close${NC}               Close the tmux session"
+  echo -e "  ${GREEN}$0 --close --dev${NC}         Close the tmux session and VS Code"
+  echo -e "  ${GREEN}$0 --close --teams${NC}       Close the tmux session and Microsoft Teams"
+  echo -e "  ${GREEN}$0 --list-branches${NC}       List current branches for all repos"
   exit 1
 fi
 
 # If session exists, just attach
 if tmux has-session -t "$SESSION" 2>/dev/null; then
     echo -e "${TEAL}→ Attaching to existing session: ${MAUVE}$SESSION${NC}"
+
+    # Open Microsoft Teams if requested
+    if $TEAMS_MODE; then
+      echo -e "${TEAL}→ Opening Microsoft Teams...${NC}"
+      open -a "Microsoft Teams" && echo -e "${GREEN}✓ Microsoft Teams opened${NC}" || echo -e "${YELLOW}⚠ Failed to open Microsoft Teams${NC}"
+    fi
+
     exec tmux attach -t "$SESSION"
 fi
 
@@ -120,6 +139,12 @@ if $DEV_MODE; then
 #   tmux send-keys -t "$SESSION:services.1" "ddev" C-m
 #   tmux send-keys -t "$SESSION:FrontEnd.0" "dev" C-m
 #   tmux send-keys -t "$SESSION:FrontEnd.1" "dev" C-m
+fi
+
+# Open Microsoft Teams if requested
+if $TEAMS_MODE; then
+  echo -e "${TEAL}→ Opening Microsoft Teams...${NC}"
+  open -a "Microsoft Teams" && echo -e "${GREEN}✓ Microsoft Teams opened${NC}" || echo -e "${YELLOW}⚠ Failed to open Microsoft Teams${NC}"
 fi
 
 # Start in Window 1, Pane 1
