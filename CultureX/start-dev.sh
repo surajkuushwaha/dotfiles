@@ -58,7 +58,7 @@ if $DEV_MODE; then
   tmux send-keys -t "$SESSION:Server.0" "code . && ddev" C-m
   tmux send-keys -t "$SESSION:Server.1" "ddev" C-m
   tmux send-keys -t "$SESSION:services.0" "ddev" C-m
-  tmux send-keys -t "$SESSION:services.1" "ddev" C-m
+#   tmux send-keys -t "$SESSION:services.1" "ddev" C-m
 #   tmux send-keys -t "$SESSION:FrontEnd.0" "dev" C-m
 #   tmux send-keys -t "$SESSION:FrontEnd.1" "dev" C-m
 fi
