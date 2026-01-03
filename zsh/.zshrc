@@ -284,3 +284,6 @@ cx() {
 }
 
 export PATH=$PATH:/Users/suraj/.spicetify
+
+# Added by Antigravity
+export PATH="/Users/suraj/.antigravity/antigravity/bin:$PATH"
