@@ -101,6 +101,8 @@ Install the following dependencies for the zsh configuration:
    # For individual packages
    stow --dotfiles -t ~ zsh
    stow --dotfiles -t ~ zellij
+   stow --dotfiles -t ~ ghostty
+   stow --dotfiles -t ~ tmux
 
    # Or for all packages at once
    stow --dotfiles -t ~ */
@@ -126,4 +128,6 @@ This happens when you don't use the `--dotfiles` flag. Solution:
 main file -> stow structure
 
 ~/.config/zellij -> zellij/.config/zellij
+~/.config/ghostty -> ghostty/.config/ghostty
 ~/.zshrc -> zsh/.zshrc
+~/.tmux.conf -> tmux/.tmux.conf
