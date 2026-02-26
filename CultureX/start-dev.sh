@@ -36,13 +36,17 @@ WORKER_PATH="$BASE_PATH/cx-worker"
 # Format: "Display Name|Executable Name"
 # If Display Name and Executable Name are the same, you can just use "App Name|App Name"
 APPLICATIONS=(
-  "VS Code|Visual Studio Code"
+  # code editors
+  # "VS Code|Visual Studio Code"
+  # "antigravity|antigravity"
+  "cursor|cursor"
+
   "Microsoft Teams|Microsoft Teams"
   "Postman|Postman"
   # "MongoDB Compass|MongoDB Compass"
   "Beekeeper Studio|Beekeeper Studio"
   "Zen Browser|Zen"
-  "antigravity|antigravity"
+  # "antigravity|antigravity"
 )
 
 # --- Functions ---

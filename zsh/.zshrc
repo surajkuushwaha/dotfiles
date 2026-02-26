@@ -115,7 +115,14 @@ source <(fzf --zsh)
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias dev="npm run dev"
-alias ddev="doppler run --watch  -- npm run dev"
+# alias ddev="doppler run --watch  -- npm run dev"
+ddev() {
+  if [ -f "pnpm-lock.yaml" ]; then
+    doppler run --watch -- pnpm run dev
+  else
+    doppler run --watch -- npm run dev
+  fi
+}
 alias pdev="pnpm dev"
 alias inano='nano $(fzf --preview="batcat --color=always {}")'
 alias ls="eza --icons=always"
@@ -188,3 +195,13 @@ export PATH=$PATH:/Users/suraj/.spicetify
 
 # Added by Antigravity
 export PATH="/Users/suraj/.antigravity/antigravity/bin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/suraj/Personal/installed-apps/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/suraj/Personal/installed-apps/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/suraj/Personal/installed-apps/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/suraj/Personal/installed-apps/google-cloud-sdk/completion.zsh.inc'; fi
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"
