@@ -114,13 +114,20 @@ source <(fzf --zsh)
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias dev="npm run dev"
+# alias dev="npm run dev"
 # alias ddev="doppler run --watch  -- npm run dev"
 ddev() {
   if [ -f "pnpm-lock.yaml" ]; then
     doppler run --watch -- pnpm run dev
   else
     doppler run --watch -- npm run dev
+  fi
+}
+dev() {
+  if [ -f "pnpm-lock.yaml" ]; then
+    pnpm run dev
+  else
+    npm run dev
   fi
 }
 alias pdev="pnpm dev"
