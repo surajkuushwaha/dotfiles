@@ -41,12 +41,15 @@ APPLICATIONS=(
   # "antigravity|antigravity"
   "cursor|cursor"
 
-  "Microsoft Teams|Microsoft Teams"
-  "Postman|Postman"
+  # API Clients
+  # "Postman|Postman"
+  "Hoppscotch|Hoppscotch"
+
+  # Database Clients
   # "MongoDB Compass|MongoDB Compass"
   "Beekeeper Studio|Beekeeper Studio"
   "Zen Browser|Zen"
-  # "antigravity|antigravity"
+  "Microsoft Teams|Microsoft Teams"
 )
 
 # --- Functions ---
