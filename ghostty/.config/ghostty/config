@@ -26,7 +26,10 @@ macos-titlebar-style = hidden
 font-thicken = 1
 
 theme = Catppuccin Mocha
-background-opacity = 0.9
-background-blur-radius = 20
+background-opacity = 1
+background-blur-radius = 15
 font-size = 14
-background-opacity = 0.9
+background = 11111b
+background-image = /Users/suraj/Pictures/walls-catppuccin-mocha/mars-car.jpg
+background-image-fit = cover
+background-image-opacity = 0.3
