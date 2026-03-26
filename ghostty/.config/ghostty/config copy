@@ -25,10 +25,6 @@ selection-foreground = cdd6f4
 macos-titlebar-style = hidden
 font-thicken = 1
 
-# Nerd Font: Catppuccin tmux powerline (/) + status icons. Primary must be patched; Menlo is fallback.
-font-family = JetBrainsMono Nerd Font
-font-family = Menlo
-
 theme = Catppuccin Mocha
 background-opacity = 1
 background = 11111b
@@ -36,10 +32,6 @@ background-image = /Users/suraj/Pictures/walls-catppuccin-mocha/mars-car.jpg
 background-image-fit = cover
 background-image-opacity = 0.3
 
-
-
-
-font-size = 19
 background-blur-radius = 20
 mouse-hide-while-typing = true
 window-decoration = false
