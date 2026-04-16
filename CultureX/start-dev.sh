@@ -24,7 +24,7 @@ OVERLAY2='\033[38;2;147;153;178m'
 NC='\033[0m' # No Color
 
 # --- Configuration ---
-BASE_PATH="~/CultureX/repos"
+BASE_PATH="$HOME/CultureX/repos"
 SERVER_PATH="$BASE_PATH/cx-saas-server"
 ANALYTICS_PATH="$BASE_PATH/cx-analytics-backend"
 CREATOR_SERVICE_PATH="$BASE_PATH/cx-creator-services"
