@@ -158,14 +158,14 @@ wooshOrigin(){
 
 
 # bun completions
-[ -s "/home/suraj/.bun/_bun" ] && source "/home/suraj/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # pnpm
-export PNPM_HOME="/home/suraj/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -183,8 +183,6 @@ _fzf_comprun() {
   esac
 }
 
-# export AWS_PROFILE=default
-# export SSH_AUTH_SOCK=/home/suraj/snap/bitwarden/current/.bitwarden-ssh-agent.sock
 # NODE VERSION MANAGERS 
 # fnm
 FNM_PATH="/opt/homebrew/opt/fnm/bin"
@@ -198,15 +196,8 @@ cx() {
   "$script" "$@"
 }
 
-export PATH=$PATH:/Users/suraj/.spicetify
+export PATH=$PATH:$HOME/.spicetify
 
 # Added by Antigravity
-export PATH="/Users/suraj/.antigravity/antigravity/bin:$PATH"
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/suraj/Personal/installed-apps/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/suraj/Personal/installed-apps/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/suraj/Personal/installed-apps/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/suraj/Personal/installed-apps/google-cloud-sdk/completion.zsh.inc'; fi
-
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 eval "$(atuin init zsh)"
