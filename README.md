@@ -96,38 +96,41 @@ Install the following dependencies for the zsh configuration:
    mv ~/.zshrc ~/.zshrc.backup
    ```
 
-2. Use stow to create symlinks. **Note**: Use the `--dotfiles` flag when your files already have dots in their names:
+2. Deploy dotfiles using stow. The `.stowrc` file configures `stow .` to target `~/.config/`:
    ```bash
-   # For individual packages
-   stow --dotfiles -t ~ zsh
-   stow --dotfiles -t ~ zellij
-   stow --dotfiles -t ~ ghostty
-   stow --dotfiles -t ~ tmux
+   # Deploy all XDG packages to ~/.config/
+   stow .
 
-   # Or for all packages at once
-   stow --dotfiles -t ~ */
+   # Deploy home-root packages (zshenv, claude) — must use -d to bypass .stowrc
+   stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude
    ```
 
 ### Troubleshooting
 
-#### Issue: Stow creates `.zshrc.pre-oh-my-zsh` instead of `.zshrc`
+#### Issue: `stow .` conflicts with existing config files
 
-This happens when Oh My Zsh has already created a `.zshrc` file. Solution:
-1. Remove or backup the existing `.zshrc`: `mv ~/.zshrc ~/.zshrc.oh-my-zsh-backup`
-2. Remove any incorrect symlinks: `rm ~/.zshrc.pre-oh-my-zsh`
-3. Re-run stow with the `--dotfiles` flag: `stow --dotfiles -t ~ zsh`
+If a config file already exists (not a symlink), use `--adopt`:
+```bash
+stow --adopt .
+```
+This moves existing files into the dotfiles repo and replaces them with symlinks.
 
-#### Issue: Symlinks created without dots (e.g., `~/zshrc` instead of `~/.zshrc`)
+#### Issue: zshenv/claude packages not deploying
 
-This happens when you don't use the `--dotfiles` flag. Solution:
-1. Unstow the package: `stow -D zsh`
-2. Re-stow with the correct flag: `stow --dotfiles -t ~ zsh`
+These packages are ignored by `.stowrc`. Deploy them separately with `-d` flag to bypass `.stowrc`:
+```bash
+stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude
+```
 
 ## GNU Stow Naming Convention
 
-main file -> stow structure
+`.stowrc` targets `~/.config/`. Each package dir maps to `~/.config/<package>/`:
 
-~/.config/zellij -> zellij/.config/zellij
-~/.config/ghostty -> ghostty/.config/ghostty
-~/.zshrc -> zsh/.zshrc
-~/.tmux.conf -> tmux/.tmux.conf
+```
+~/.config/ghostty/config  → ghostty/config
+~/.config/zellij/config.kdl → zellij/config.kdl
+~/.config/tmux/tmux.conf  → tmux/tmux.conf
+~/.config/zsh/.zshrc      → zsh/.zshrc (via ZDOTDIR)
+~/.zshenv                 → zshenv/dot-zshenv (dot- prefix convention)
+~/.claude/settings.json   → claude/dot-claude/settings.json
+```

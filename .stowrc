@@ -1,0 +1,8 @@
+--target=~/.config
+--ignore=.stowrc
+--ignore=DS_Store
+--ignore=CultureX
+--ignore=README.md
+--ignore=CLAUDE.md
+--ignore=zshenv
+--ignore=claude

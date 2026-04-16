@@ -1,4 +1,4 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Enable Powerlevel10k instant prompt. Should stay close to the top of $ZDOTDIR/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -80,7 +80,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(git z zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
-source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
+source $ZDOTDIR/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
 # Set up fzf key bindings and fuzzy completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 source <(fzf --zsh)
@@ -152,7 +152,7 @@ wooshOrigin(){
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
 
 
 
@@ -208,7 +208,5 @@ if [ -f '/Users/suraj/Personal/installed-apps/google-cloud-sdk/path.zsh.inc' ]; 
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/suraj/Personal/installed-apps/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/suraj/Personal/installed-apps/google-cloud-sdk/completion.zsh.inc'; fi
-
-. "$HOME/.atuin/bin/env"
 
 eval "$(atuin init zsh)"
