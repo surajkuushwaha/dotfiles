@@ -27,6 +27,5 @@
       }
     }
   },
-  "effortLevel": "low",
-  "model": "opus[1m]"
+  "effortLevel": "high"
 }

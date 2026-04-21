@@ -32,8 +32,8 @@ font-family = Menlo
 theme = Catppuccin Mocha
 background-opacity = 1
 background = 11111b
-background-image = $HOME/Pictures/walls-catppuccin-mocha/mars-car.jpg
-background-image-fit = cover
+background-image = /Users/suraj/Pictures/walls-catppuccin-mocha/star-wars-star-destroyer-digital-art-5k-ly.jpg
+background-image-fit = cover∞
 background-image-opacity = 0.3
 
 
