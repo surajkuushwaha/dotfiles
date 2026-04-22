@@ -93,10 +93,10 @@ preset = 'qwerty'
 [gaps]
 # inner.vertical =   500
 inner.horizontal = [{ monitor.main = 40 }, 10]
-outer.left =       [{ monitor.main = 350 }, 20]
-outer.right =      [{ monitor.main = 350 }, 20]
-outer.bottom =     [{ monitor.main = 100 }, 10]
-outer.top =        [{ monitor.main = 100 }, 10]
+outer.left =       [{ monitor.main = 20 }, 20]
+outer.right =      [{ monitor.main = 20 }, 20]
+outer.bottom =     [{ monitor.main = 20 }, 10]
+outer.top =        [{ monitor.main = 50 }, 10]
 
 
 # 'main' binding mode declaration
