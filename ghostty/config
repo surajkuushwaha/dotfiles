@@ -29,11 +29,11 @@ font-thicken = 1
 font-family = JetBrainsMono Nerd Font
 font-family = Menlo
 
-theme = Catppuccin Mocha
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 background-opacity = 1
 background = 11111b
 background-image = /Users/suraj/Pictures/walls-catppuccin-mocha/star-wars-star-destroyer-digital-art-5k-ly.jpg
-background-image-fit = cover∞
+background-image-fit = cover
 background-image-opacity = 0.3
 
 
