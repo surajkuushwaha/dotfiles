@@ -143,6 +143,8 @@ alias glo='git log --oneline'
 alias igbc='git checkout $(git for-each-ref --sort=-committerdate --format "%(refname:short)" refs/heads/ | fzf)'
 
 
+
+alias psm='ps -eo pid,rss,comm | sort -rk 2 | head -n 20 | awk "{printf \"PID: %-8s RAM: %-10s MB  PATH: %s\n\", \$1, \$2/1024, \$3}"'
 wooshOrigin(){
     git checkout -b $1 &&
     git push -u origin HEAD
