@@ -143,8 +143,22 @@ alias glo='git log --oneline'
 alias igbc='git checkout $(git for-each-ref --sort=-committerdate --format "%(refname:short)" refs/heads/ | fzf)'
 
 
+psm() {
+  ps -eo pid,%cpu,rss,comm | sort -rk 3 | head -n 21 | \
+  awk 'NR==1 {printf "%-8s %-10s %-10s %s\n", "PID", "CPU(%)", "RAM(MB)", "COMMAND"; next}
+       {printf "PID: %-8s CPU: %-10s %%  RAM: %-10.2f MB  PATH: %s\n", $1, $2, $3/1024, $4}'
+}
 
-alias psm='ps -eo pid,rss,comm | sort -rk 2 | head -n 20 | awk "{printf \"PID: %-8s RAM: %-10s MB  PATH: %s\n\", \$1, \$2/1024, \$3}"'
+psc() {
+  ps -eo pid,%cpu,rss,comm | sort -rk 2 | head -n 21 | \
+  awk 'NR==1 {printf "%-8s %-10s %-10s %s\n", "PID", "CPU(%)", "RAM(MB)", "COMMAND"; next}
+       {printf "PID: %-8s CPU: %-10s %%  RAM: %-10.2f MB  PATH: %s\n", $1, $2, $3/1024, $4}'
+}
+
+q() {
+  pi -p "$*"
+}
+
 wooshOrigin(){
     git checkout -b $1 &&
     git push -u origin HEAD

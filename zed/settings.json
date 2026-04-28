@@ -7,15 +7,43 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "vim_mode": false,
+  "disable_ai": false,
+  "proxy": "",
+  "agent_servers": {
+    "pi-acp": {
+      "type": "registry",
+    },
+    "claude-acp": {
+      "type": "registry",
+    },
+  },
+  "edit_predictions": {
+    "codestral": {
+      "api_url": "https://codestral.mistral.ai",
+    },
+    "provider": "zed",
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "collaboration_panel": {
+    "dock": "left",
+  },
+  "agent": {
+    "dock": "left",
+    "favorite_models": [],
+    "model_parameters": [],
+    "commit_message_model": {
+      "provider": "zed.dev",
+      "model": "gpt-5-mini",
+    },
+  },
+  "vim_mode": true,
   "git_panel": {
-    "dock": "right"
+    "dock": "right",
   },
   "project_panel": {
-    "dock": "right"
-  },
-  "features": {
-    "edit_prediction_provider": "copilot"
+    "dock": "right",
   },
   "ui_font_size": 16,
   "buffer_font_size": 15,
@@ -24,5 +52,5 @@
     "mode": "system",
     "light": "One Light",
     "dark": "Catppuccin Mocha"
-  }
+  },
 }
