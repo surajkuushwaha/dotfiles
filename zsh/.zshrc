@@ -116,6 +116,7 @@ source <(fzf --zsh)
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # alias dev="npm run dev"
 # alias ddev="doppler run --watch  -- npm run dev"
+alias zed="open -a /Applications/Zed.app -n"
 ddev() {
   if [ -f "pnpm-lock.yaml" ]; then
     doppler run --watch -- pnpm run dev
@@ -217,3 +218,12 @@ export PATH=$PATH:$HOME/.spicetify
 # Added by Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 eval "$(atuin init zsh)"
+\
+# yazi
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
