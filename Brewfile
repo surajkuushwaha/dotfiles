@@ -57,8 +57,6 @@ brew "uv"
 brew "yazi", args: ["HEAD"]
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
-# Pluggable terminal workspace, with terminal multiplexer as the base feature
-brew "zellij"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # UNIX shell (command interpreter)
@@ -83,14 +81,10 @@ cask "google-chrome"
 cask "hiddenbar"
 # Open source API development ecosystem
 cask "hoppscotch"
-# Download manager
-cask "jdownloader"
 # Clipboard manager
 cask "maccy"
 # Provides updates to various Microsoft products
 cask "microsoft-auto-update"
-# Spreadsheet software
-cask "microsoft-excel"
 # Meet, chat, call, and collaborate in just one place
 cask "microsoft-teams"
 # Interactive tool for analyzing MongoDB data
