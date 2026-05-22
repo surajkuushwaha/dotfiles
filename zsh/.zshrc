@@ -127,7 +127,11 @@ ddev() {
 dev() {
   if [ -f "pnpm-lock.yaml" ]; then
     pnpm run dev
-  else
+  fi
+  if [ -f "bun.lock" ]; then
+    bun run dev
+  fi
+  if [ -f "package-lock.json" ]; then
     npm run dev
   fi
 }

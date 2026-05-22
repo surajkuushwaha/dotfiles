@@ -7,9 +7,26 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "diff_view_style": "split",
+  "terminal": {
+    "font_weight": 600.0,
+    "font_family": "JetBrainsMono Nerd Font"
+  },
   "disable_ai": false,
   "proxy": "",
   "agent_servers": {
+    "opencode": {
+      "type": "registry"
+    },
+    "gemini": {
+      "type": "registry"
+    },
+    "codex-acp": {
+      "type": "registry"
+    },
+    "cursor": {
+      "type": "registry"
+    },
     "pi-acp": {
       "type": "registry"
     },

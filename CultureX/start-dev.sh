@@ -24,13 +24,14 @@ OVERLAY2='\033[38;2;147;153;178m'
 NC='\033[0m' # No Color
 
 # --- Configuration ---
-BASE_PATH="$HOME/CultureX/repos"
+BASE_PATH="$HOME/CultureX/features/mastermind"
+BASE_PATH2="$HOME/CultureX/repos"
 SERVER_PATH="$BASE_PATH/cx-saas-server"
 ANALYTICS_PATH="$BASE_PATH/cx-analytics-backend"
 CREATOR_SERVICE_PATH="$BASE_PATH/cx-creator-services"
-DASHBOARD_PATH="$BASE_PATH/cx-saas-dashboard"
-SUPER_ADMIN_PATH="$BASE_PATH/saas-super-admin"
-WORKER_PATH="$BASE_PATH/cx-worker"
+DASHBOARD_PATH="$BASE_PATH2/cx-saas-dashboard"
+SUPER_ADMIN_PATH="$BASE_PATH2/saas-super-admin"
+WORKER_PATH="$BASE_PATH2/cx-worker"
 
 # --- Applications Configuration ---
 # Format: "Display Name|Executable Name"
@@ -46,8 +47,8 @@ APPLICATIONS=(
   "Hoppscotch|Hoppscotch"
 
   # Database Clients
-  # "MongoDB Compass|MongoDB Compass"
-  "Beekeeper Studio|Beekeeper Studio"
+  "MongoDB Compass|MongoDB Compass"
+  # "Beekeeper Studio|Beekeeper Studio"
   "Zen Browser|Zen"
   "Microsoft Teams|Microsoft Teams"
 )
@@ -96,11 +97,11 @@ setup_tmux_session() {
 
   # ---- Window 1: Server ----
   tmux new-session -d -s "$SESSION" -n "Server" -c "$SERVER_PATH"
-  tmux split-window -h -t "$SESSION:Server" -c "$ANALYTICS_PATH"
+  tmux split-window -h -t "$SESSION:Server" -c "$WORKER_PATH"
 
   # ---- Window 2: Services ----
   tmux new-window -t "$SESSION" -n "services" -c "$CREATOR_SERVICE_PATH"
-  tmux split-window -h -t "$SESSION:services" -c "$WORKER_PATH"
+  tmux split-window -h -t "$SESSION:services" -c "$ANALYTICS_PATH"
 
   # ---- Window 3: FrontEnd ----
   tmux new-window -t "$SESSION" -n "FrontEnd" -c "$DASHBOARD_PATH"
@@ -109,9 +110,11 @@ setup_tmux_session() {
   # Start dev servers
   echo -e "${TEAL}→ Starting dev servers...${NC}"
   sleep 0.5
-  tmux send-keys -t "$SESSION:Server.0" "ddev" C-m
-  tmux send-keys -t "$SESSION:Server.1" "ddev" C-m
-  tmux send-keys -t "$SESSION:services.0" "ddev" C-m
+  tmux send-keys -t "$SESSION:Server.0" "dev" C-m
+  # tmux send-keys -t "$SESSION:Server.1" "dev" C-m
+  tmux send-keys -t "$SESSION:services.0" "dev" C-m
+  tmux send-keys -t "$SESSION:services.1" "dev" C-m
+  tmux send-keys -t "$SESSION:FrontEnd.0" "dev" C-m
 
   # Start in Window 1, Pane 1
   tmux select-window -t "$SESSION:Server"

@@ -97,7 +97,7 @@ inner.horizontal = [{ monitor.main = 5 }, 10]
 outer.left =       [{ monitor.main = 5 }, 20]
 outer.right =      [{ monitor.main = 5 }, 20]
 outer.bottom =     [{ monitor.main = 5 }, 10]
-outer.top =        [{ monitor.main = 40 }, 10]
+outer.top =        [{ monitor.main = 5 }, 10]
 
 
 # 'main' binding mode declaration
