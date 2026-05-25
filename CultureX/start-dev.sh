@@ -86,6 +86,13 @@ open_all_applications() {
   done
 }
 
+close_tmux_session() {
+  echo -e "${TEAL}→ Closing tmux session...${NC}"
+  tmux kill-session -t "$SESSION" 2>/dev/null && \
+    echo -e "${GREEN}✓ Tmux session closed${NC}" || \
+    echo -e "${YELLOW}⚠ No tmux session to close${NC}"
+}
+
 setup_tmux_session() {
   # If tmux session exists, just attach
   if tmux has-session -t "$SESSION" 2>/dev/null; then
@@ -125,39 +132,48 @@ setup_tmux_session() {
 }
 
 # --- Main Logic ---
-case "$1" in
-  --close)
-    echo -e "${MAUVE}Closing all applications...${NC}"
-    echo ""
-    close_all_applications
-    echo ""
-    echo -e "${TEAL}→ Closing tmux session...${NC}"
-    tmux kill-session -t "$SESSION" 2>/dev/null && \
-      echo -e "${GREEN}✓ Tmux session closed${NC}" || \
-      echo -e "${YELLOW}⚠ No tmux session to close${NC}"
-    exit 0
-    ;;
+if [[ "$#" -eq 1 && "$1" == "--close" ]]; then
+  echo -e "${MAUVE}Closing all applications...${NC}"
+  echo ""
+  close_all_applications
+  echo ""
+  close_tmux_session
+  exit 0
+fi
 
-  --open)
-    echo -e "${MAUVE}Opening all applications...${NC}"
-    echo ""
+if [[ "$#" -eq 1 && "$1" == "--tmux" ]]; then
+  echo -e "${MAUVE}Starting tmux session...${NC}"
+  echo ""
+  setup_tmux_session
+fi
 
-    # Open all applications
-    open_all_applications
+if [[ "$#" -eq 2 ]] && \
+  { [[ "$1" == "--tmux" && "$2" == "--close" ]] || [[ "$1" == "--close" && "$2" == "--tmux" ]]; }; then
+  echo -e "${MAUVE}Closing tmux session...${NC}"
+  echo ""
+  close_tmux_session
+  exit 0
+fi
 
-    echo ""
-    sleep 3  # Give apps time to launch
+if [[ "$#" -eq 1 && "$1" == "--open" ]]; then
+  echo -e "${MAUVE}Opening all applications...${NC}"
+  echo ""
 
-    # Setup and attach to tmux session
-    setup_tmux_session
-    ;;
+  # Open all applications
+  open_all_applications
 
-  *)
-    echo -e "${RED}Error: Invalid argument${NC}"
-    echo ""
-    echo -e "${YELLOW}Usage:${NC}"
-    echo -e "  ${GREEN}$0 --open${NC}   Open all applications, start tmux session, and run dev servers"
-    echo -e "  ${GREEN}$0 --close${NC}  Close all applications and tmux session"
-    exit 1
-    ;;
-esac
+  echo ""
+  sleep 3  # Give apps time to launch
+
+  # Setup and attach to tmux session
+  setup_tmux_session
+fi
+
+echo -e "${RED}Error: Invalid argument${NC}"
+echo ""
+echo -e "${YELLOW}Usage:${NC}"
+echo -e "  ${GREEN}$0 --tmux${NC}          Start or attach to the tmux session only"
+echo -e "  ${GREEN}$0 --tmux --close${NC}  Close only the tmux session"
+echo -e "  ${GREEN}$0 --open${NC}          Open all applications, start tmux session, and run dev servers"
+echo -e "  ${GREEN}$0 --close${NC}         Close all applications and tmux session"
+exit 1
