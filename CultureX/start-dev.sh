@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SESSION="cx-dev"
 
 # --- Colors (Catppuccin Mocha) ---
@@ -208,6 +209,10 @@ if [[ "$#" -eq 1 && "$1" == "--open" ]]; then
   setup_tmux_session
 fi
 
+if [[ "$#" -eq 1 && "$1" == "--pr-review" ]]; then
+  exec "$SCRIPT_DIR/pr-review-requested.sh"
+fi
+
 echo -e "${RED}Error: Invalid argument${NC}"
 echo ""
 echo -e "${YELLOW}Usage:${NC}"
@@ -215,4 +220,5 @@ echo -e "  ${GREEN}$0 --tmux${NC}          Start or attach to the tmux session o
 echo -e "  ${GREEN}$0 --tmux --close${NC}  Close only the tmux session"
 echo -e "  ${GREEN}$0 --open${NC}          Open all applications, start tmux session, and run dev servers"
 echo -e "  ${GREEN}$0 --close${NC}         Close all applications and tmux session"
+echo -e "  ${GREEN}$0 --pr-review${NC}     List open PRs awaiting your review"
 exit 1
