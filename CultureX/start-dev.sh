@@ -153,6 +153,10 @@ setup_tmux_session() {
   tmux new-window -t "$SESSION" -n "FrontEnd" -c "$DASHBOARD_PATH"
   tmux split-window -h -t "$SESSION:FrontEnd" -c "$SUPER_ADMIN_PATH"
 
+  # ---- Window 4: Pending PR Reviews ----
+  tmux new-window -t "$SESSION" -n "Pending PR Reviews" -c "$SCRIPT_DIR"
+  PR_REVIEWS_TARGET="$(tmux display-message -p -t "$SESSION" '#{session_name}:#{window_index}')"
+
   # Start dev servers
   echo -e "${TEAL}→ Starting dev servers...${NC}"
   sleep 0.5
@@ -161,6 +165,7 @@ setup_tmux_session() {
   tmux send-keys -t "$SESSION:services.0" "dev" C-m
   tmux send-keys -t "$SESSION:services.1" "dev" C-m
   tmux send-keys -t "$SESSION:FrontEnd.0" "dev" C-m
+  tmux send-keys -t "$PR_REVIEWS_TARGET" "bash '$SCRIPT_DIR/start-dev.sh' --pr-review" C-m
 
   # Start in Window 1, Pane 1
   tmux select-window -t "$SESSION:Server"
