@@ -165,7 +165,7 @@ setup_tmux_session() {
   tmux send-keys -t "$SESSION:services.0" "dev" C-m
   tmux send-keys -t "$SESSION:services.1" "dev" C-m
   tmux send-keys -t "$SESSION:FrontEnd.0" "dev" C-m
-  tmux send-keys -t "$PR_REVIEWS_TARGET" "bash '$SCRIPT_DIR/start-dev.sh' --pr-review" C-m
+  tmux send-keys -t "$PR_REVIEWS_TARGET" "cx --pr-review" C-m
 
   # Start in Window 1, Pane 1
   tmux select-window -t "$SESSION:Server"
