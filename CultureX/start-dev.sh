@@ -24,14 +24,9 @@ OVERLAY2='\033[38;2;147;153;178m'
 NC='\033[0m' # No Color
 
 # --- Configuration ---
-BASE_PATH="$HOME/CultureX/features/mastermind"
-BASE_PATH2="$HOME/CultureX/repos"
-SERVER_PATH="$BASE_PATH/cx-saas-server"
-ANALYTICS_PATH="$BASE_PATH/cx-analytics-backend"
-CREATOR_SERVICE_PATH="$BASE_PATH/cx-creator-services"
-DASHBOARD_PATH="$BASE_PATH2/cx-saas-dashboard"
-SUPER_ADMIN_PATH="$BASE_PATH2/saas-super-admin"
-WORKER_PATH="$BASE_PATH2/cx-worker"
+FEATURE_NAME=""   # mastermind | ntt | empty = use repos only
+REPOS_BASE="$HOME/CultureX/repos"
+FEATURES_BASE="$HOME/CultureX/features"
 
 # --- Applications Configuration ---
 # Format: "Display Name|Executable Name"
@@ -54,6 +49,41 @@ APPLICATIONS=(
 )
 
 # --- Functions ---
+resolve_repo_path() {
+  local repo="$1"
+  local feature_path="$FEATURES_BASE/$FEATURE_NAME/$repo"
+
+  if [[ -n "$FEATURE_NAME" && -d "$feature_path" ]]; then
+    echo "$feature_path"
+  else
+    echo "$REPOS_BASE/$repo"
+  fi
+}
+
+validate_repo_path() {
+  local name="$1"
+  local path="$2"
+  [[ -d "$path" ]] || echo -e "${YELLOW}⚠ ${name} not found at ${path}${NC}"
+}
+
+log_repo_paths() {
+  local feature_label="${FEATURE_NAME:-none}"
+  echo -e "${TEAL}→ Repo paths (feature: ${MAUVE}${feature_label}${TEAL}):${NC}"
+  echo -e "  ${SUBTEXT0}cx-saas-server${NC}        → ${SERVER_PATH/#$HOME/\~}"
+  validate_repo_path "cx-saas-server" "$SERVER_PATH"
+  echo -e "  ${SUBTEXT0}cx-analytics-backend${NC} → ${ANALYTICS_PATH/#$HOME/\~}"
+  validate_repo_path "cx-analytics-backend" "$ANALYTICS_PATH"
+  echo -e "  ${SUBTEXT0}cx-creator-services${NC}  → ${CREATOR_SERVICE_PATH/#$HOME/\~}"
+  validate_repo_path "cx-creator-services" "$CREATOR_SERVICE_PATH"
+  echo -e "  ${SUBTEXT0}cx-saas-dashboard${NC}    → ${DASHBOARD_PATH/#$HOME/\~}"
+  validate_repo_path "cx-saas-dashboard" "$DASHBOARD_PATH"
+  echo -e "  ${SUBTEXT0}saas-super-admin${NC}     → ${SUPER_ADMIN_PATH/#$HOME/\~}"
+  validate_repo_path "saas-super-admin" "$SUPER_ADMIN_PATH"
+  echo -e "  ${SUBTEXT0}cx-worker${NC}            → ${WORKER_PATH/#$HOME/\~}"
+  validate_repo_path "cx-worker" "$WORKER_PATH"
+  echo ""
+}
+
 close_application() {
   local app_name="$1"
   local app_executable="$2"
@@ -92,6 +122,14 @@ close_tmux_session() {
     echo -e "${GREEN}✓ Tmux session closed${NC}" || \
     echo -e "${YELLOW}⚠ No tmux session to close${NC}"
 }
+
+# --- Repo Paths ---
+SERVER_PATH="$(resolve_repo_path cx-saas-server)"
+ANALYTICS_PATH="$(resolve_repo_path cx-analytics-backend)"
+CREATOR_SERVICE_PATH="$(resolve_repo_path cx-creator-services)"
+DASHBOARD_PATH="$(resolve_repo_path cx-saas-dashboard)"
+SUPER_ADMIN_PATH="$(resolve_repo_path saas-super-admin)"
+WORKER_PATH="$(resolve_repo_path cx-worker)"
 
 setup_tmux_session() {
   # If tmux session exists, just attach
@@ -144,6 +182,7 @@ fi
 if [[ "$#" -eq 1 && "$1" == "--tmux" ]]; then
   echo -e "${MAUVE}Starting tmux session...${NC}"
   echo ""
+  log_repo_paths
   setup_tmux_session
 fi
 
@@ -165,7 +204,7 @@ if [[ "$#" -eq 1 && "$1" == "--open" ]]; then
   echo ""
   sleep 3  # Give apps time to launch
 
-  # Setup and attach to tmux session
+  log_repo_paths
   setup_tmux_session
 fi
 
