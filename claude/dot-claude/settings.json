@@ -3,9 +3,31 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_NO_FLICKER": "1"
   },
+  "permissions": {
+    "allow": [
+      "Bash(awk -F'\\\\t' '$3==\"processing\"' batch/batch-state.tsv)",
+      "Bash(rtk wc *)",
+      "Bash(./batch/batch-runner.sh --help)"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "opus[1m]",
   "statusLine": {
     "type": "command",
-    "command": "$HOME/.claude/statusline-command.sh"
+    "command": "bash $HOME/.claude/statusline-mocha.sh"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/suraj/.claude/hooks/rtk-rewrite.sh"
+          }
+        ]
+      }
+    ]
   },
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
@@ -13,7 +35,8 @@
     "superpowers@claude-plugins-official": true,
     "caveman@caveman": true,
     "claude-code-wakatime@wakatime": true,
-    "vercel@claude-plugins-official": false
+    "vercel@claude-plugins-official": false,
+    "frontend-design@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -29,5 +52,8 @@
       }
     }
   },
-  "effortLevel": "high"
+  "effortLevel": "high",
+  "tui": "fullscreen",
+  "theme": "custom:catpuchine",
+  "skipAutoPermissionPrompt": true
 }
