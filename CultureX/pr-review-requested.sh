@@ -4,6 +4,7 @@
 MAUVE='\033[38;2;203;166;247m'
 YELLOW='\033[38;2;249;226;175m'
 GREEN='\033[38;2;166;227;161m'
+RED='\033[38;2;243;139;168m'
 TEAL='\033[38;2;148;226;213m'
 SUBTEXT0='\033[38;2;166;173;200m'
 SUBTEXT1='\033[38;2;186;194;222m'
@@ -66,6 +67,33 @@ truncate() {
   fi
 }
 
+merge_label() {
+  local mergeable="$1"
+  local status="$2"
+
+  if [[ "$mergeable" == "CONFLICTING" || "$status" == "DIRTY" ]]; then
+    echo "conflict"
+    return
+  fi
+  case "$status" in
+    CLEAN)     echo "ok" ;;
+    BEHIND)    echo "behind" ;;
+    BLOCKED)   echo "blocked" ;;
+    UNSTABLE)  echo "unstable" ;;
+    UNKNOWN)   echo "…" ;;
+    *)         echo "$status" ;;
+  esac
+}
+
+merge_color() {
+  case "$1" in
+    conflict) echo "$RED" ;;
+    ok)       echo "$GREEN" ;;
+    behind|blocked|unstable) echo "$YELLOW" ;;
+    *)        echo "$SUBTEXT0" ;;
+  esac
+}
+
 print_repo_table() {
   local repo="$1"
   local prs_json="$2"
@@ -78,19 +106,21 @@ print_repo_table() {
   echo -e "${MAUVE}${sep}${NC}"
   echo -e "${MAUVE} ${short_repo}${NC} ${SUBTEXT0}(${repo_count} PR(s))${NC}"
   echo -e "${MAUVE}${sep}${NC}"
-  printf "  ${SUBTEXT0}%-7s %-44s %-20s %-12s %s${NC}\n" \
-    "PR #" "Title" "Author" "Updated" "Link"
-  printf "  ${SUBTEXT0}%-7s %-44s %-20s %-12s %s${NC}\n" \
-    "──────" "────────────────────────────────────────────" \
-    "────────────────────" "────────────" "────────────────────────────"
+  printf "  ${SUBTEXT0}%-7s %-40s %-20s %-12s %-10s %s${NC}\n" \
+    "PR #" "Title" "Author" "Updated" "Merge" "Link"
+  printf "  ${SUBTEXT0}%-7s %-40s %-20s %-12s %-10s %s${NC}\n" \
+    "──────" "────────────────────────────────────────" \
+    "────────────────────" "────────────" "──────────" "────────────────────────────"
 
-  while IFS=$'\t' read -r number title author updated url; do
+  while IFS=$'\t' read -r number title author updated mergeable merge_status url; do
     updated_fmt="$(format_updated_at "$updated")"
-    title_fmt="$(truncate "$title" 44)"
-    printf "  ${TEXT}#%-6s${NC} ${TEXT}%-44s${NC} ${SUBTEXT1}%-20s${NC} ${SUBTEXT0}%-12s${NC} ${TEAL}%s${NC}\n" \
-      "$number" "$title_fmt" "@${author}" "$updated_fmt" "$url"
+    title_fmt="$(truncate "$title" 40)"
+    merge_fmt="$(merge_label "$mergeable" "$merge_status")"
+    merge_c="$(merge_color "$merge_fmt")"
+    printf "  ${TEXT}#%-6s${NC} ${TEXT}%-40s${NC} ${SUBTEXT1}%-20s${NC} ${SUBTEXT0}%-12s${NC} ${merge_c}%-10s${NC} ${TEAL}%s${NC}\n" \
+      "$number" "$title_fmt" "@${author}" "$updated_fmt" "$merge_fmt" "$url"
   done < <(jq -r 'sort_by(.updatedAt) | reverse | .[] |
-    "\(.number)\t\(.title)\t\(.author.login)\t\(.updatedAt)\t\(.url)"' <<< "$prs_json")
+    "\(.number)\t\(.title)\t\(.author.login)\t\(.updatedAt)\t\(.mergeable)\t\(.mergeStateStatus)\t\(.url)"' <<< "$prs_json")
 
   echo ""
 }
@@ -130,7 +160,7 @@ for repo in "${REPOS[@]}"; do
 
   prs="$(gh pr list -R "$slug" \
     --search "$PR_SEARCH" \
-    --json number,title,url,updatedAt,author \
+    --json number,title,url,updatedAt,author,mergeable,mergeStateStatus \
     --limit 100 2>/dev/null)" || {
     echo -e "${YELLOW}⚠ Failed to fetch PRs for ${slug}${NC}"
     ((skipped++)) || true
