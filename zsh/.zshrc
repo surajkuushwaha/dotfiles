@@ -146,6 +146,8 @@ alias gst='git status'
 alias gl='git log --oneline --graph --decorate'
 alias glo='git log --oneline'
 alias igbc='git checkout $(git for-each-ref --sort=-committerdate --format "%(refname:short)" refs/heads/ | fzf)'
+alias dcu='docker compose up'
+alias dcd='docker compose down'
 
 
 psm() {

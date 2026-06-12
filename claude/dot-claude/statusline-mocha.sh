@@ -142,7 +142,7 @@ if [[ -n "$used" ]]; then
   [[ -n "$out" ]] && out+="$SEP"
   used_int=$(printf '%.0f' "$used")
   bar=$(build_ctx_bar "$used_int")
-  emoji=$(usage_emoji "$used_int")
+  # emoji=$(usage_emoji "$used_int")
   pctcol=$(pct_color "$used_int")
   out+="${bar}${emoji}$(printf '%b%d%%%b' "$pctcol" "$used_int" "$c_reset")"
 fi

@@ -25,7 +25,7 @@ OVERLAY2='\033[38;2;147;153;178m'
 NC='\033[0m' # No Color
 
 # --- Configuration ---
-FEATURE_NAME=""   # mastermind | ntt | empty = use repos only
+FEATURE_NAME="mastermind"   # mastermind | ntn | empty = use repos only
 REPOS_BASE="$HOME/CultureX/repos"
 FEATURES_BASE="$HOME/CultureX/features"
 
