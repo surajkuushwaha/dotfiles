@@ -51,6 +51,7 @@
     context                   # user@host
     dir                       # current directory
     vcs                       # git status
+    pr_number                 # github pr number for current branch
     command_execution_time    # previous command duration
     virtualenv                # python virtual environment
     prompt_char               # prompt symbol
@@ -191,3 +192,44 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
+
+# Custom segment: GitHub PR number for the current branch.
+# Shows ' #<number>' colored by PR state (OPEN=blue, MERGED=green, CLOSED=red).
+# Hidden when gh is missing, the branch has no PR, or the command fails.
+# Result is cached per repo+branch for 60s so `gh pr view` doesn't run on every redraw.
+function prompt_pr_number() {
+  (( $+commands[gh] )) || return                                 # gh not installed
+
+  local branch root
+  branch=$(command git symbolic-ref --short --quiet HEAD 2>/dev/null) || return
+  root=$(command git rev-parse --show-toplevel 2>/dev/null) || return
+
+  zmodload -F zsh/datetime b:strftime 2>/dev/null
+  local now=${EPOCHSECONDS:-0}
+  local cache_file="${TMPDIR:-/tmp}/p10k-pr-${root//[^A-Za-z0-9]/_}-${branch//[^A-Za-z0-9]/_}"
+
+  local ts=0 data=
+  [[ -r $cache_file ]] && IFS=$'\t' read -r ts data < $cache_file
+
+  if (( now - ${ts:-0} >= 60 )); then
+    # @tsv emits "<number>\t<state>" on success, nothing when there's no PR or gh fails.
+    data=$(command gh pr view --json number,state --jq '[.number, .state] | @tsv' 2>/dev/null)
+    print -r -- "${now}	${data}" > $cache_file 2>/dev/null
+  fi
+
+  [[ -n $data ]] || return                                       # no PR / command failed
+
+  local number state
+  IFS=$'\t' read -r number state <<< "$data"
+  [[ -n $number ]] || return
+
+  local color
+  case $state in
+    OPEN)   color=blue ;;
+    MERGED) color=green ;;
+    CLOSED) color=red ;;
+    *)      color=grey ;;
+  esac
+
+  p10k segment -f $color -t " #${number}"
+}

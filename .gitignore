@@ -2,4 +2,5 @@ gh/hosts.yml
 zsh/.zcompdump*
 *.zwc
 zsh/.zsh_history
+zsh/.zsh_sessions/*
 .DS_Store
