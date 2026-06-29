@@ -162,6 +162,23 @@ psc() {
        {printf "PID: %-8s CPU: %-10s %%  RAM: %-10.2f MB  PATH: %s\n", $1, $2, $3/1024, $4}'
 }
 
+tmuxcopy() {
+    local pane
+
+    pane=$(
+        tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{window_name}' |
+        fzf --prompt="Select pane: " --height=40%
+    ) || return
+
+    pane=$(echo "$pane" | awk '{print $1}')
+
+    tmux capture-pane -p -S - -t "$pane" | pbcopy
+
+    echo "✅ Copied logs from $pane to clipboard"
+}
+
+alias tcopy='tmuxcopy'
+
 q() {
   pi -p "$*"
 }
