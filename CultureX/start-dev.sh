@@ -40,7 +40,8 @@ APPLICATIONS=(
 
   # API Clients
   # "Postman|Postman"
-  "Hoppscotch|Hoppscotch"
+  # "Hoppscotch|Hoppscotch"
+  "yaak|yaak"
 
   # Database Clients
   "MongoDB Compass|MongoDB Compass"

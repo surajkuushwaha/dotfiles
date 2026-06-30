@@ -195,6 +195,8 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 # Custom segment: GitHub PR number for the current branch.
 # Shows ' #<number>' colored by PR state (OPEN=blue, MERGED=green, CLOSED=red).
+# The '#<number>' is an OSC 8 hyperlink to the PR (clickable in supporting terminals).
+# A red conflict glyph is appended when the PR has merge conflicts (mergeable=CONFLICTING).
 # Hidden when gh is missing, the branch has no PR, or the command fails.
 # Result is cached per repo+branch for 60s so `gh pr view` doesn't run on every redraw.
 function prompt_pr_number() {
@@ -212,15 +214,16 @@ function prompt_pr_number() {
   [[ -r $cache_file ]] && IFS=$'\t' read -r ts data < $cache_file
 
   if (( now - ${ts:-0} >= 60 )); then
-    # @tsv emits "<number>\t<state>" on success, nothing when there's no PR or gh fails.
-    data=$(command gh pr view --json number,state --jq '[.number, .state] | @tsv' 2>/dev/null)
+    # @tsv emits "<number>\t<state>\t<mergeable>\t<url>"; nothing when no PR or gh fails.
+    data=$(command gh pr view --json number,state,mergeable,url \
+      --jq '[.number, .state, .mergeable, .url] | @tsv' 2>/dev/null)
     print -r -- "${now}	${data}" > $cache_file 2>/dev/null
   fi
 
   [[ -n $data ]] || return                                       # no PR / command failed
 
-  local number state
-  IFS=$'\t' read -r number state <<< "$data"
+  local number state mergeable url
+  IFS=$'\t' read -r number state mergeable url <<< "$data"
   [[ -n $number ]] || return
 
   local color
@@ -231,5 +234,15 @@ function prompt_pr_number() {
     *)      color=grey ;;
   esac
 
-  p10k segment -f $color -t " #${number}"
+  # Clickable PR number via OSC 8 hyperlink. %{...%} marks the escapes as zero-width
+  # so the prompt's column math stays correct.
+  local text=" #${number}"
+  if [[ -n $url ]]; then
+    text="%{"$'\e]8;;'"${url}"$'\e\\'"%} #${number}%{"$'\e]8;;'$'\e\\'"%}"
+  fi
+
+  # Append a red warning glyph when the PR can't be merged cleanly.
+  [[ $mergeable == CONFLICTING ]] && text+="%F{red} %f"
+
+  p10k segment -f $color -t "$text"
 }
