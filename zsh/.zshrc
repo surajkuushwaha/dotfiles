@@ -1,122 +1,31 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of $ZDOTDIR/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# load theme
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
+# plugins
 plugins=(git z zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 source $ZDOTDIR/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
+
 # Set up fzf key bindings and fuzzy completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 source <(fzf --zsh)
 
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
 
 
+# zsh plugin
 
-# now load zsh-syntax-highlighting plugin
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-# alias dev="npm run dev"
-# alias ddev="doppler run --watch  -- npm run dev"
+# open zed code editor using zed .
 alias zed="open -a /Applications/Zed.app -n"
+
+# start the dev server - manly for the node or ts projects
 ddev() {
   if [ -f "pnpm-lock.yaml" ]; then
     doppler run --watch -- pnpm run dev
@@ -135,9 +44,12 @@ dev() {
     npm run dev
   fi
 }
-alias pdev="pnpm dev"
 alias inano='nano $(fzf --preview="batcat --color=always {}")'
-alias ls="eza --icons=always"
+
+# eza aliasesd
+alias l="eza -l --icons --git -a"
+alias lt="eza --tree --level=2 --long --icons --git"
+alias ltree="eza --tree --level=2  --icons --git"
 
 
 # git alias
@@ -146,22 +58,27 @@ alias gst='git status'
 alias gl='git log --oneline --graph --decorate'
 alias glo='git log --oneline'
 alias igbc='git checkout $(git for-each-ref --sort=-committerdate --format "%(refname:short)" refs/heads/ | fzf)'
+alias glog="git log --graph --topo-order --pretty='%w(100,0,6)%C(yellow)%h%C(bold)%C(black)%d %C(cyan)%ar %C(green)%an%n%C(bold)%C(white)%s %N' --abbrev-commit"
+
+# docker aliases
 alias dcu='docker compose up'
 alias dcd='docker compose down'
 
-
+# process aliases
+# show memory usage of top 21 processes
 psm() {
   ps -eo pid,%cpu,rss,comm | sort -rk 3 | head -n 21 | \
   awk 'NR==1 {printf "%-8s %-10s %-10s %s\n", "PID", "CPU(%)", "RAM(MB)", "COMMAND"; next}
        {printf "PID: %-8s CPU: %-10s %%  RAM: %-10.2f MB  PATH: %s\n", $1, $2, $3/1024, $4}'
 }
-
+# show cpu usage of top 21 processes
 psc() {
   ps -eo pid,%cpu,rss,comm | sort -rk 2 | head -n 21 | \
   awk 'NR==1 {printf "%-8s %-10s %-10s %s\n", "PID", "CPU(%)", "RAM(MB)", "COMMAND"; next}
        {printf "PID: %-8s CPU: %-10s %%  RAM: %-10.2f MB  PATH: %s\n", $1, $2, $3/1024, $4}'
 }
 
+# tmux aliases
 tmuxcopy() {
     local pane
 
@@ -176,26 +93,16 @@ tmuxcopy() {
 
     echo "✅ Copied logs from $pane to clipboard"
 }
-
 alias tcopy='tmuxcopy'
 
 q() {
   pi -p "$*"
 }
 
-wooshOrigin(){
-    git checkout -b $1 &&
-    git push -u origin HEAD
-}
-
-
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
-
-
-
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
@@ -242,6 +149,7 @@ export PATH=$PATH:$HOME/.spicetify
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 eval "$(atuin init zsh)"
 \
+
 # yazi
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
