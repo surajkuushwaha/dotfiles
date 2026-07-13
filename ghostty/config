@@ -32,9 +32,10 @@ font-family = Menlo
 theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 background-opacity = 1
 background = 11111b
-background-image = /Users/suraj/Pictures/walls-catppuccin-mocha/star-wars-star-destroyer-digital-art-5k-ly.jpg
-background-image-fit = cover
-background-image-opacity = 0.3
+
+# Space shader: flying starfield, only visible in dark areas (from omerxx/dotfiles)
+custom-shader = shaders/space.glsl
+custom-shader-animation = true
 
 
 
