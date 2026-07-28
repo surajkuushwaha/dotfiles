@@ -29,7 +29,11 @@ alias zed="open -a /Applications/Zed.app -n"
 ddev() {
   if [ -f "pnpm-lock.yaml" ]; then
     doppler run --watch -- pnpm run dev
-  else
+  fi
+  if [ -f "bun.lock" ]; then
+    doppler run --watch -- bun run dev
+  fi
+  if [ -f "package-lock.json" ]; then
     doppler run --watch -- npm run dev
   fi
 }
@@ -143,13 +147,18 @@ _fzf_comprun() {
   esac
 }
 
-# NODE VERSION MANAGERS 
+# NODE VERSION MANAGERS
 # fnm
 FNM_PATH="/opt/homebrew/opt/fnm/bin"
 if [ -d "$FNM_PATH" ]; then
   eval "`fnm env`"
 fi
 # ---
+
+sk() {
+  local script="$HOME/Personal/dotfiles/automation/current-project.sh"
+  "$script" "$@"
+}
 
 cx() {
   local script="$HOME/Personal/dotfiles/CultureX/start-dev.sh"

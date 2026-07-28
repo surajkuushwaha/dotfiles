@@ -60,10 +60,6 @@ if.app-name-regex-substring = 'safari'
 run = 'layout floating'
  
 [[on-window-detected]]
-if.app-name-regex-substring = 'dicord'
-run = 'layout floating'
-
-[[on-window-detected]]
 if.app-name-regex-substring = 'mail'
 run = 'layout floating'
 
@@ -93,11 +89,11 @@ preset = 'qwerty'
 #                 See: https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
 # inner.vertical =   500
-inner.horizontal = [{ monitor.main = 5 }, 10]
-outer.left =       [{ monitor.main = 5 }, 20]
-outer.right =      [{ monitor.main = 5 }, 20]
-outer.bottom =     [{ monitor.main = 5 }, 10]
-outer.top =        [{ monitor.main = 5 }, 10]
+inner.horizontal = [{ monitor.main = 0 }, 0]
+outer.left =       [{ monitor.main = 0 }, 0]
+outer.right =      [{ monitor.main = 0 }, 0]
+outer.bottom =     [{ monitor.main = 0 }, 0]
+outer.top =        [{ monitor.main = 40 }, 0]
 
 
 # 'main' binding mode declaration
@@ -133,10 +129,10 @@ outer.top =        [{ monitor.main = 5 }, 10]
 alt-ctrl-shift-f = 'fullscreen'
 alt-ctrl-f = 'layout floating tiling'
 
-# alt-shift-left = 'join-with left'
-# alt-shift-down = 'join-with down'
-# alt-shift-up = 'join-with up'
-# alt-shift-right = 'join-with right'
+alt-shift-left = 'join-with left'
+alt-shift-down = 'join-with down'
+alt-shift-up = 'join-with up'
+alt-shift-right = 'join-with right'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#layout
 alt-slash = 'layout tiles horizontal vertical'
@@ -213,8 +209,12 @@ r = ['flatten-workspace-tree', 'mode main'] # reset layout
 f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
 backspace = ['close-all-windows-but-current', 'mode main']
 
+# App launcher: alt-shift-enter, then letter
 [mode.apps.binding]
-alt-w = ['exec-and-forget open -a /Applications/WezTerm.app', 'mode main']
+esc = 'mode main'
+g = ['exec-and-forget open -a /Applications/Ghostty.app', 'mode main']
+z = ['exec-and-forget open -a /Applications/Zen.app', 'mode main']
+c = ['exec-and-forget open -a /Applications/Cursor.app', 'mode main']
 
 [workspace-to-monitor-force-assignment]
 1 = '^Built-in.*$'

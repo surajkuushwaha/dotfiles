@@ -7,6 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "format_on_save": "on",
+  "autosave": "off",
+  "base_keymap": "VSCode",
   "diff_view_style": "split",
   "terminal": {
     "font_weight": 600.0,
@@ -44,6 +47,7 @@
     "dock": "left"
   },
   "collaboration_panel": {
+    "button": false,
     "dock": "left"
   },
   "agent": {
