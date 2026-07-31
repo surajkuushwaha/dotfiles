@@ -1,5 +1,7 @@
 tap "anomalyco/tap"
-tap "dopplerhq/cli"
+tap "dopplerhq/doppler", "https://github.com/DopplerHQ/homebrew-doppler.git"
+tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae"
+tap "nikitabobko/tap"
 tap "oven-sh/bun"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
@@ -7,8 +9,14 @@ brew "atuin", restart_service: :changed
 brew "bat"
 # Toolchain of the web
 brew "biome"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
 # Console Bonsai is a bonsai tree generator, written in C using ncurses
 brew "cbonsai"
+# Cloudflare Tunnel client (formerly Argo Tunnel)
+brew "cloudflared"
+# CLI for interacting with Doppler secrets and configuration
+brew "doppler", link: false
 # Modern, maintained replacement for ls
 brew "eza"
 # Play, record, convert, and stream select audio and video codecs
@@ -23,14 +31,26 @@ brew "gemini-cli"
 brew "gh"
 # Distributed revision control system
 brew "git"
+# Small git utilities
+brew "git-extras"
+# Audit git repos for secrets
+brew "gitleaks"
 # GNU Privacy Guard (OpenPGP)
 brew "gnupg"
 # CLI to streamline Go project setup with standardized structure
 brew "go-blueprint"
+# Improved top (interactive process viewer)
+brew "htop"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.14"
 # Keep your Mac's application settings in sync
 brew "mackup"
+# Deep clean and optimize your Mac
+brew "mole"
+# Open source relational database management system
+brew "mysql-client"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Port scanning utility for large networks
@@ -61,18 +81,14 @@ brew "yt-dlp"
 brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
-# The AI coding agent built for the terminal.
-brew "anomalyco/tap/opencode"
-# The official Doppler CLI for managing your secrets
-brew "dopplerhq/cli/doppler"
-# Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
-brew "oven-sh/bun/bun"
+cask "aerospace"
 # Display management tool
 cask "betterdisplay"
 # Desktop password and login vault
 cask "bitwarden"
 # Universal database tool and SQL client
 cask "dbeaver-community"
+cask "font-sf-pro"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Web browser
@@ -83,8 +99,6 @@ cask "hiddenbar"
 cask "hoppscotch"
 # Clipboard manager
 cask "maccy"
-# Provides updates to various Microsoft products
-cask "microsoft-auto-update"
 # Meet, chat, call, and collaborate in just one place
 cask "microsoft-teams"
 # Interactive tool for analyzing MongoDB data
@@ -107,10 +121,61 @@ cask "raycast"
 cask "rectangle"
 # Tool to reverse the direction of scrolling
 cask "scroll-reverser"
+# Tool that provides consistent, highly configurable symbols for apps
+cask "sf-symbols"
 # Open-source code editor
 cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
+# REST, GraphQL and gRPC client
+cask "yaak"
+vscode "anthropic.claude-code"
+vscode "biomejs.biome"
+vscode "catppuccin.catppuccin-vsc"
+vscode "catppuccin.catppuccin-vsc-icons"
+vscode "davidanson.vscode-markdownlint"
+vscode "dbaeumer.vscode-eslint"
+vscode "docker.docker"
+vscode "eamodio.gitlens"
+vscode "esbenp.prettier-vscode"
+vscode "formulahendry.auto-rename-tag"
+vscode "github.vscode-pull-request-github"
+vscode "golang.go"
+vscode "gruntfuggly.todo-tree"
+vscode "kilocode.kilo-code"
+vscode "mechatroner.rainbow-csv"
+vscode "mermaidchart.vscode-mermaid-chart"
+vscode "ms-azuretools.vscode-containers"
+vscode "ms-azuretools.vscode-docker"
+vscode "ms-vscode.makefile-tools"
+vscode "oderwat.indent-rainbow"
+vscode "pomdtr.excalidraw-editor"
+vscode "redhat.vscode-yaml"
+vscode "simonsiefke.svg-preview"
+vscode "sst-dev.opencode"
+vscode "streetsidesoftware.code-spell-checker"
+vscode "tomoki1207.pdf"
+vscode "vscodevim.vim"
+vscode "wakatime.vscode-wakatime"
+vscode "wix.vscode-import-cost"
+vscode "yoavbls.pretty-ts-errors"
 go "github.com/air-verse/air"
+go "github.com/ashishxcode/commit-chronicle/cmd/commit-chronicle"
 go "github.com/melkeydev/go-blueprint"
 go "golang.org/x/tools/gopls"
+npm "@bitwarden/cli"
+npm "@fission-ai/openspec"
+npm "@github/copilot"
+npm "@hoppscotch/cli"
+npm "@mariozechner/pi-coding-agent"
+npm "@openai/codex"
+npm "@yaakapp/cli"
+npm "agent-browser"
+npm "artillery"
+npm "corepack"
+npm "jscpd"
+npm "node-gyp"
+npm "nodemon"
+npm "serverless"
+npm "typescript"
+npm "yarn"
