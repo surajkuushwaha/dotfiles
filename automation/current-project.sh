@@ -5,14 +5,19 @@ set -euo pipefail
 SESSION="dev"
 PROJECTS_DIR="$HOME/Personal/projects"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./aerospace-workspaces.sh
+source "$SCRIPT_DIR/aerospace-workspaces.sh"
+
 # -----------------------------------------------------------------------------
 # Applications
-# Format: "Display Name|Executable Name"
+# Format: "Display Name|Executable Name|AeroSpace Workspace"
+# Workspace is optional — leave it off to let the app land wherever.
 # -----------------------------------------------------------------------------
 APPLICATIONS=(
-  # "Cursor|Cursor"
-  "Zen Browser|Zen"
-  "zed|zed"
+  # "Cursor|Cursor|4"
+  "Zen Browser|Zen|1"
+  "zed|zed|2"
 )
 
 # -----------------------------------------------------------------------------
@@ -52,7 +57,7 @@ warn() {
 # -----------------------------------------------------------------------------
 open_all_applications() {
   for app in "${APPLICATIONS[@]}"; do
-    IFS='|' read -r display executable <<< "$app"
+    IFS='|' read -r display executable _workspace <<< "$app"
 
     log "Opening ${display}..."
     open -a "$executable" >/dev/null 2>&1 || warn "Failed to open ${display}"
@@ -61,7 +66,7 @@ open_all_applications() {
 
 close_all_applications() {
   for app in "${APPLICATIONS[@]}"; do
-    IFS='|' read -r display executable <<< "$app"
+    IFS='|' read -r display executable _workspace <<< "$app"
 
     log "Closing ${display}..."
     osascript -e "quit app \"$executable\"" >/dev/null 2>&1 || true
@@ -213,6 +218,8 @@ fi
 if $OPEN; then
   open_all_applications
   sleep 2
+  log "Placing windows on AeroSpace workspaces..."
+  aerospace_place_from_applications "${APPLICATIONS[@]}"
   setup_tmux
   exit 0
 fi

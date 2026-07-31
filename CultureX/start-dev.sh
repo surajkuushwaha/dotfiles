@@ -3,6 +3,9 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SESSION="cx-dev"
 
+# shellcheck source=../automation/aerospace-workspaces.sh
+source "$SCRIPT_DIR/../automation/aerospace-workspaces.sh"
+
 # --- Colors (Catppuccin Mocha) ---
 ROSEWATER='\033[38;2;245;224;220m'
 FLAMINGO='\033[38;2;242;205;205m'
@@ -30,24 +33,25 @@ REPOS_BASE="$HOME/CultureX/repos"
 FEATURES_BASE="$HOME/CultureX/features"
 
 # --- Applications Configuration ---
-# Format: "Display Name|Executable Name"
-# If Display Name and Executable Name are the same, you can just use "App Name|App Name"
+# Format: "Display Name|Executable Name|AeroSpace Workspace"
+# If Display Name and Executable Name are the same, you can just use "App Name|App Name|N"
+# Workspace is optional — leave it off to let the app land wherever.
 APPLICATIONS=(
   # code editors
-  # "VS Code|Visual Studio Code"
-  # "antigravity|antigravity"
-  "cursor|cursor"
+  # "VS Code|Visual Studio Code|2"
+  # "antigravity|antigravity|2"
+  "cursor|cursor|2"
 
   # API Clients
-  # "Postman|Postman"
-  # "Hoppscotch|Hoppscotch"
-  "yaak|yaak"
+  # "Postman|Postman|5"
+  # "Hoppscotch|Hoppscotch|5"
+  "yaak|yaak|5"
 
   # Database Clients
-  "MongoDB Compass|MongoDB Compass"
-  # "Beekeeper Studio|Beekeeper Studio"
-  "Zen Browser|Zen"
-  "Microsoft Teams|Microsoft Teams"
+  "MongoDB Compass|MongoDB Compass|6"
+  # "Beekeeper Studio|Beekeeper Studio|6"
+  "Zen Browser|Zen|1"
+  "Microsoft Teams|Microsoft Teams|7"
 )
 
 # --- Functions ---
@@ -71,17 +75,17 @@ validate_repo_path() {
 log_repo_paths() {
   local feature_label="${FEATURE_NAME:-none}"
   echo -e "${TEAL}→ Repo paths (feature: ${MAUVE}${feature_label}${TEAL}):${NC}"
-  echo -e "  ${SUBTEXT0}cx-saas-server${NC}        → ${SERVER_PATH/#$HOME/\~}"
+  echo -e "  ${SUBTEXT0}cx-saas-server${NC}        → ${SERVER_PATH/#$HOME/~}"
   validate_repo_path "cx-saas-server" "$SERVER_PATH"
-  echo -e "  ${SUBTEXT0}cx-analytics-backend${NC} → ${ANALYTICS_PATH/#$HOME/\~}"
+  echo -e "  ${SUBTEXT0}cx-analytics-backend${NC} → ${ANALYTICS_PATH/#$HOME/~}"
   validate_repo_path "cx-analytics-backend" "$ANALYTICS_PATH"
-  echo -e "  ${SUBTEXT0}cx-creator-services${NC}  → ${CREATOR_SERVICE_PATH/#$HOME/\~}"
+  echo -e "  ${SUBTEXT0}cx-creator-services${NC}  → ${CREATOR_SERVICE_PATH/#$HOME/~}"
   validate_repo_path "cx-creator-services" "$CREATOR_SERVICE_PATH"
-  echo -e "  ${SUBTEXT0}cx-saas-dashboard${NC}    → ${DASHBOARD_PATH/#$HOME/\~}"
+  echo -e "  ${SUBTEXT0}cx-saas-dashboard${NC}    → ${DASHBOARD_PATH/#$HOME/~}"
   validate_repo_path "cx-saas-dashboard" "$DASHBOARD_PATH"
-  echo -e "  ${SUBTEXT0}saas-super-admin${NC}     → ${SUPER_ADMIN_PATH/#$HOME/\~}"
+  echo -e "  ${SUBTEXT0}saas-super-admin${NC}     → ${SUPER_ADMIN_PATH/#$HOME/~}"
   validate_repo_path "saas-super-admin" "$SUPER_ADMIN_PATH"
-  echo -e "  ${SUBTEXT0}cx-worker${NC}            → ${WORKER_PATH/#$HOME/\~}"
+  echo -e "  ${SUBTEXT0}cx-worker${NC}            → ${WORKER_PATH/#$HOME/~}"
   validate_repo_path "cx-worker" "$WORKER_PATH"
   echo ""
 }
@@ -106,14 +110,14 @@ open_application() {
 
 close_all_applications() {
   for app in "${APPLICATIONS[@]}"; do
-    IFS='|' read -r display_name executable <<< "$app"
+    IFS='|' read -r display_name executable _workspace <<< "$app"
     close_application "$display_name" "$executable"
   done
 }
 
 open_all_applications() {
   for app in "${APPLICATIONS[@]}"; do
-    IFS='|' read -r display_name executable <<< "$app"
+    IFS='|' read -r display_name executable _workspace <<< "$app"
     open_application "$display_name" "$executable"
   done
 }
@@ -133,11 +137,20 @@ DASHBOARD_PATH="$(resolve_repo_path cx-saas-dashboard)"
 SUPER_ADMIN_PATH="$(resolve_repo_path saas-super-admin)"
 WORKER_PATH="$(resolve_repo_path cx-worker)"
 
+# Attach from outside tmux, switch from inside it (nested attach fails).
+attach_tmux_session() {
+  if [[ -n "${TMUX:-}" ]]; then
+    exec tmux switch-client -t "$SESSION"
+  else
+    exec tmux attach -t "$SESSION"
+  fi
+}
+
 setup_tmux_session() {
   # If tmux session exists, just attach
   if tmux has-session -t "$SESSION" 2>/dev/null; then
     echo -e "${TEAL}→ Attaching to existing session: ${MAUVE}$SESSION${NC}"
-    exec tmux attach -t "$SESSION"
+    attach_tmux_session
   fi
 
   echo -e "${TEAL}→ Creating new tmux session: ${MAUVE}$SESSION${NC}"
@@ -173,7 +186,7 @@ setup_tmux_session() {
   tmux select-pane -t ".0"
 
   # Attach to the session
-  exec tmux attach -t "$SESSION"
+  attach_tmux_session
 }
 
 # --- Main Logic ---
@@ -210,6 +223,10 @@ if [[ "$#" -eq 1 && "$1" == "--open" ]]; then
 
   echo ""
   sleep 3  # Give apps time to launch
+
+  echo -e "${TEAL}→ Placing windows on AeroSpace workspaces...${NC}"
+  aerospace_place_from_applications "${APPLICATIONS[@]}"
+  echo ""
 
   log_repo_paths
   setup_tmux_session

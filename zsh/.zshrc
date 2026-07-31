@@ -62,6 +62,7 @@ alias gst='git status'
 alias gl='git log --oneline --graph --decorate'
 alias glo='git log --oneline'
 alias igbc='git checkout $(git for-each-ref --sort=-committerdate --format "%(refname:short)" refs/heads/ | fzf)'
+alias igpc='gh pr checkout'
 alias gc="git commit -m"
 alias gca="git commit -a -m"
 alias gp="git push origin HEAD"
