@@ -198,29 +198,80 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 # The '#<number>' is an OSC 8 hyperlink to the PR (clickable in supporting terminals).
 # A red conflict glyph is appended when the PR has merge conflicts (mergeable=CONFLICTING).
 # Hidden when gh is missing, the branch has no PR, or the command fails.
-# Result is cached per repo+branch for 60s so `gh pr view` doesn't run on every redraw.
+#
+# `gh pr view` is a network call, so it NEVER runs in the prompt itself. The segment only
+# reads a per-repo+branch cache file; when that cache is missing or older than $_PR_TTL a
+# background job refreshes it and the prompt is redrawn once the job exits. Stale values
+# keep rendering while the refresh runs (stale-while-revalidate), so the prompt is instant.
+zmodload zsh/datetime 2>/dev/null           # provides $EPOCHSECONDS (a param, not a builtin)
+
+typeset -g  _PR_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/p10k-pr"
+typeset -g  _PR_TTL=60                      # seconds before a cached result is refreshed
+typeset -gA _PR_FETCHING=()                 # cache key -> 1 while a fetch is in flight
+typeset -gA _PR_FD_KEY=()                   # watched fd -> cache key
+
+# zle fd-watcher callback: a background `gh` fetch just exited (EOF on its pipe).
+function _pr_fetch_done() {
+  local fd=$1 key=${_PR_FD_KEY[$1]}
+  zle -F $fd
+  exec {fd}<&-
+  unset "_PR_FD_KEY[$1]"
+  [[ -n $key ]] && unset "_PR_FETCHING[$key]"
+  zle && zle reset-prompt
+}
+
+# Refresh $file for $key in the background. No-op if a fetch is already running for $key.
+function _pr_fetch_async() {
+  [[ -n ${_PR_FETCHING[$1]} ]] && return
+  local key=$1 file=$2 fd
+  _PR_FETCHING[$key]=1
+  # The job writes the cache file itself; the pipe carries no data and exists purely so
+  # zle gets an EOF to trigger the redraw.
+  exec {fd}< <(
+    command mkdir -p ${file:h} 2>/dev/null
+    # @tsv emits "<number>\t<state>\t<mergeable>\t<url>"; empty when no PR or gh fails.
+    local data=$(command gh pr view --json number,state,mergeable,url \
+      --jq '[.number, .state, .mergeable, .url] | @tsv' 2>/dev/null)
+    print -r -- "${EPOCHSECONDS}	${data}" > $file 2>/dev/null
+  )
+  # Without zle (non-interactive) there is nothing to redraw; don't leak the fd or the flag.
+  if ! zle -F $fd _pr_fetch_done 2>/dev/null; then
+    exec {fd}<&-
+    unset "_PR_FETCHING[$key]"
+    return
+  fi
+  _PR_FD_KEY[$fd]=$key
+}
+
 function prompt_pr_number() {
   (( $+commands[gh] )) || return                                 # gh not installed
 
-  local branch root
-  branch=$(command git symbolic-ref --short --quiet HEAD 2>/dev/null) || return
-  root=$(command git rev-parse --show-toplevel 2>/dev/null) || return
+  # Reuse gitstatusd's already-computed values when p10k has them; fork git only otherwise.
+  local root=$VCS_STATUS_WORKDIR branch=$VCS_STATUS_LOCAL_BRANCH
+  if [[ -z $root || -z $branch ]]; then
+    local out
+    out=$(command git rev-parse --show-toplevel --abbrev-ref HEAD 2>/dev/null) || return
+    root=${out%%$'\n'*} branch=${out##*$'\n'}
+  fi
+  [[ -n $root && -n $branch && $branch != HEAD ]] || return      # not a repo / detached HEAD
 
-  zmodload -F zsh/datetime b:strftime 2>/dev/null
-  local now=${EPOCHSECONDS:-0}
-  local cache_file="${TMPDIR:-/tmp}/p10k-pr-${root//[^A-Za-z0-9]/_}-${branch//[^A-Za-z0-9]/_}"
+  local key="${root}:${branch}"
+  local file="${_PR_CACHE_DIR}/${key//[^A-Za-z0-9]/_}"
 
-  local ts=0 data=
-  [[ -r $cache_file ]] && IFS=$'\t' read -r ts data < $cache_file
-
-  if (( now - ${ts:-0} >= 60 )); then
-    # @tsv emits "<number>\t<state>\t<mergeable>\t<url>"; nothing when no PR or gh fails.
-    data=$(command gh pr view --json number,state,mergeable,url \
-      --jq '[.number, .state, .mergeable, .url] | @tsv' 2>/dev/null)
-    print -r -- "${now}	${data}" > $cache_file 2>/dev/null
+  local ts=0 data= known=0
+  if [[ -r $file ]]; then
+    known=1
+    IFS=$'\t' read -r ts data < $file
   fi
 
-  [[ -n $data ]] || return                                       # no PR / command failed
+  (( EPOCHSECONDS - ${ts:-0} >= _PR_TTL )) && _pr_fetch_async "$key" "$file"
+
+  if [[ -z $data ]]; then
+    # Nothing cached. Show a loading hint only on the very first lookup for this branch —
+    # once we know the branch has no PR, later refreshes stay silent instead of flickering.
+    (( known )) || [[ -z ${_PR_FETCHING[$key]} ]] || p10k segment -f 242 -t ' #…'
+    return
+  fi
 
   local number state mergeable url
   IFS=$'\t' read -r number state mergeable url <<< "$data"
@@ -231,7 +282,7 @@ function prompt_pr_number() {
     OPEN)   color=blue ;;
     MERGED) color=green ;;
     CLOSED) color=red ;;
-    *)      color=grey ;;
+    *)      color=242 ;;
   esac
 
   # Clickable PR number via OSC 8 hyperlink. %{...%} marks the escapes as zero-width
