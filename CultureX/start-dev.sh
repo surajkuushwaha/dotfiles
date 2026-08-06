@@ -37,21 +37,24 @@ FEATURES_BASE="$HOME/CultureX/features"
 # If Display Name and Executable Name are the same, you can just use "App Name|App Name|N"
 # Workspace is optional — leave it off to let the app land wherever.
 APPLICATIONS=(
+  "Zen Browser|Zen|1"
   # code editors
   # "VS Code|Visual Studio Code|2"
   # "antigravity|antigravity|2"
   "cursor|cursor|2"
+  "ghostty|ghostty|2"
 
   # API Clients
   # "Postman|Postman|5"
   # "Hoppscotch|Hoppscotch|5"
-  "yaak|yaak|5"
+  "yaak|yaak|4"
 
   # Database Clients
-  "MongoDB Compass|MongoDB Compass|6"
-  # "Beekeeper Studio|Beekeeper Studio|6"
-  "Zen Browser|Zen|1"
-  "Microsoft Teams|Microsoft Teams|7"
+  # "MongoDB Compass|MongoDB Compass|5"
+  "Beekeeper Studio|Beekeeper Studio|5"
+
+  # Communication
+  "Microsoft Teams|Microsoft Teams|0"
 )
 
 # --- Functions ---
