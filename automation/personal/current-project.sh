@@ -6,14 +6,17 @@ SESSION="dev"
 PROJECTS_DIR="$HOME/Personal/projects"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=./colors.sh
-source "$SCRIPT_DIR/colors.sh"
-# shellcheck source=./applications.sh
-source "$SCRIPT_DIR/applications.sh"
-# shellcheck source=./tmux.sh
-source "$SCRIPT_DIR/tmux.sh"
-# shellcheck source=./aerospace-workspaces.sh
-source "$SCRIPT_DIR/aerospace-workspaces.sh"
+
+# Shared helpers. Override DOTFILES_LIB to source them from elsewhere.
+DOTFILES_LIB="${DOTFILES_LIB:-$(cd "$SCRIPT_DIR/../lib" && pwd)}"
+# shellcheck source=../lib/colors.sh
+source "$DOTFILES_LIB/colors.sh"
+# shellcheck source=../lib/applications.sh
+source "$DOTFILES_LIB/applications.sh"
+# shellcheck source=../lib/tmux.sh
+source "$DOTFILES_LIB/tmux.sh"
+# shellcheck source=../lib/aerospace-workspaces.sh
+source "$DOTFILES_LIB/aerospace-workspaces.sh"
 
 # -----------------------------------------------------------------------------
 # Applications

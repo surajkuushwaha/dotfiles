@@ -18,7 +18,7 @@ stow .
 stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude
 ```
 
-Packages ignored by `.stowrc`: CultureX, zshenv, claude, README.md, CLAUDE.md.
+Packages ignored by `.stowrc`: automation, zshenv, claude, README.md, CLAUDE.md.
 
 ## Package Layout
 
@@ -40,7 +40,7 @@ Packages ignored by `.stowrc`: CultureX, zshenv, claude, README.md, CLAUDE.md.
 | `wezterm/` | `~/.config/wezterm/wezterm.lua` | |
 | `glazewm/` | `~/.config/glazewm/config.yaml` | Windows |
 | `yasb/` | `~/.config/yasb/` | Windows |
-| `CultureX/` | Not stowed — work scripts | |
+| `automation/` | Not stowed — run from the repo | `lib/` shared helpers, `personal/` (`sk`), `culturex/` (`cx`) |
 
 ## Zsh Stack
 

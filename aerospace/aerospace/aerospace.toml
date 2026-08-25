@@ -50,7 +50,7 @@ automatically-unhide-macos-hidden-apps = false
 # --- Default workspace placement ---
 # 1 = Zen, 2 = Zed, 3 = Ghostty
 # Fires on newly opened windows. Already-running apps are handled by
-# automation/aerospace-workspaces.sh (used by `cx --open` / `sk --open`).
+# automation/lib/aerospace-workspaces.sh (used by `cx --open` / `sk --open`).
 [[on-window-detected]]
 if.app-id = 'app.zen-browser.zen'
 run = 'move-node-to-workspace 1'

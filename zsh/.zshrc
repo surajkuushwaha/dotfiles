@@ -157,12 +157,12 @@ fi
 # ---
 
 sk() {
-  local script="$HOME/Personal/dotfiles/automation/current-project.sh"
+  local script="$HOME/Personal/dotfiles/automation/personal/current-project.sh"
   "$script" "$@"
 }
 
 cx() {
-  local script="$HOME/Personal/dotfiles/CultureX/start-dev.sh"
+  local script="$HOME/Personal/dotfiles/automation/culturex/start-dev.sh"
   "$script" "$@"
 }
 

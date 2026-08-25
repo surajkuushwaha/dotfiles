@@ -3,16 +3,16 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SESSION="cx-dev"
 
-AUTOMATION_DIR="$SCRIPT_DIR/../automation"
-
-# shellcheck source=../automation/colors.sh
-source "$AUTOMATION_DIR/colors.sh"
-# shellcheck source=../automation/applications.sh
-source "$AUTOMATION_DIR/applications.sh"
-# shellcheck source=../automation/tmux.sh
-source "$AUTOMATION_DIR/tmux.sh"
-# shellcheck source=../automation/aerospace-workspaces.sh
-source "$AUTOMATION_DIR/aerospace-workspaces.sh"
+# Shared helpers. Override DOTFILES_LIB to source them from elsewhere.
+DOTFILES_LIB="${DOTFILES_LIB:-$(cd "$SCRIPT_DIR/../lib" && pwd)}"
+# shellcheck source=../lib/colors.sh
+source "$DOTFILES_LIB/colors.sh"
+# shellcheck source=../lib/applications.sh
+source "$DOTFILES_LIB/applications.sh"
+# shellcheck source=../lib/tmux.sh
+source "$DOTFILES_LIB/tmux.sh"
+# shellcheck source=../lib/aerospace-workspaces.sh
+source "$DOTFILES_LIB/aerospace-workspaces.sh"
 
 # --- Configuration ---
 FEATURE_NAME=""   # mastermind | report-fix | empty = use repos only
