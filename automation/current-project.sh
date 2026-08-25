@@ -6,6 +6,12 @@ SESSION="dev"
 PROJECTS_DIR="$HOME/Personal/projects"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=./colors.sh
+source "$SCRIPT_DIR/colors.sh"
+# shellcheck source=./applications.sh
+source "$SCRIPT_DIR/applications.sh"
+# shellcheck source=./tmux.sh
+source "$SCRIPT_DIR/tmux.sh"
 # shellcheck source=./aerospace-workspaces.sh
 source "$SCRIPT_DIR/aerospace-workspaces.sh"
 
@@ -33,73 +39,12 @@ PROJECTS=(
 )
 
 # -----------------------------------------------------------------------------
-# Colors
-# -----------------------------------------------------------------------------
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-RED='\033[0;31m'
-NC='\033[0m'
-
-log() {
-  echo -e "${BLUE}→${NC} $1"
-}
-
-success() {
-  echo -e "${GREEN}✓${NC} $1"
-}
-
-warn() {
-  echo -e "${YELLOW}⚠${NC} $1"
-}
-
-# -----------------------------------------------------------------------------
-# Applications
-# -----------------------------------------------------------------------------
-open_all_applications() {
-  for app in "${APPLICATIONS[@]}"; do
-    IFS='|' read -r display executable _workspace <<< "$app"
-
-    log "Opening ${display}..."
-    open -a "$executable" >/dev/null 2>&1 || warn "Failed to open ${display}"
-  done
-}
-
-close_all_applications() {
-  for app in "${APPLICATIONS[@]}"; do
-    IFS='|' read -r display executable _workspace <<< "$app"
-
-    log "Closing ${display}..."
-    osascript -e "quit app \"$executable\"" >/dev/null 2>&1 || true
-  done
-}
-
-# -----------------------------------------------------------------------------
 # Tmux
 # -----------------------------------------------------------------------------
-close_tmux() {
-  if tmux has-session -t "$SESSION" 2>/dev/null; then
-    tmux kill-session -t "$SESSION"
-    success "Closed tmux session: $SESSION"
-  else
-    warn "No tmux session named '$SESSION' found."
-  fi
-}
-
 setup_tmux() {
 
-  # Session already exists
-  if tmux has-session -t "$SESSION" 2>/dev/null; then
-
-    if [[ -n "${TMUX:-}" ]]; then
-      log "Switching to existing session..."
-      exec tmux switch-client -t "$SESSION"
-    else
-      log "Attaching to existing session..."
-      exec tmux attach-session -t "$SESSION"
-    fi
-
-  fi
+  # Session already exists — attach and never come back.
+  tmux_attach_if_exists "$SESSION"
 
   log "Creating tmux session..."
 
@@ -142,11 +87,7 @@ setup_tmux() {
 
   tmux select-window -t "$SESSION:1"
 
-  if [[ -n "${TMUX:-}" ]]; then
-    exec tmux switch-client -t "$SESSION"
-  else
-    exec tmux attach-session -t "$SESSION"
-  fi
+  tmux_attach_session "$SESSION"
 }
 
 usage() {
@@ -204,20 +145,20 @@ done
 
 # sk --tmux --close
 if $TMUX_ONLY && $CLOSE; then
-  close_tmux
+  tmux_kill_session "$SESSION"
   exit 0
 fi
 
 # sk --close
 if $CLOSE; then
-  close_all_applications
-  close_tmux
+  apps_close_all "${APPLICATIONS[@]}"
+  tmux_kill_session "$SESSION"
   exit 0
 fi
 
 # sk --open
 if $OPEN; then
-  open_all_applications
+  apps_open_all "${APPLICATIONS[@]}"
   sleep 2
   log "Placing windows on AeroSpace workspaces..."
   aerospace_place_from_applications "${APPLICATIONS[@]}"

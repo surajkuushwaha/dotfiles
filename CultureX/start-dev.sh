@@ -3,32 +3,19 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SESSION="cx-dev"
 
-# shellcheck source=../automation/aerospace-workspaces.sh
-source "$SCRIPT_DIR/../automation/aerospace-workspaces.sh"
+AUTOMATION_DIR="$SCRIPT_DIR/../automation"
 
-# --- Colors (Catppuccin Mocha) ---
-ROSEWATER='\033[38;2;245;224;220m'
-FLAMINGO='\033[38;2;242;205;205m'
-PINK='\033[38;2;245;194;231m'
-MAUVE='\033[38;2;203;166;247m'
-RED='\033[38;2;243;139;168m'
-MAROON='\033[38;2;235;160;172m'
-PEACH='\033[38;2;250;179;135m'
-YELLOW='\033[38;2;249;226;175m'
-GREEN='\033[38;2;166;227;161m'
-TEAL='\033[38;2;148;226;213m'
-SKY='\033[38;2;137;220;235m'
-SAPPHIRE='\033[38;2;116;199;236m'
-BLUE='\033[38;2;137;180;250m'
-LAVENDER='\033[38;2;180;190;254m'
-TEXT='\033[38;2;205;214;244m'
-SUBTEXT1='\033[38;2;186;194;222m'
-SUBTEXT0='\033[38;2;166;173;200m'
-OVERLAY2='\033[38;2;147;153;178m'
-NC='\033[0m' # No Color
+# shellcheck source=../automation/colors.sh
+source "$AUTOMATION_DIR/colors.sh"
+# shellcheck source=../automation/applications.sh
+source "$AUTOMATION_DIR/applications.sh"
+# shellcheck source=../automation/tmux.sh
+source "$AUTOMATION_DIR/tmux.sh"
+# shellcheck source=../automation/aerospace-workspaces.sh
+source "$AUTOMATION_DIR/aerospace-workspaces.sh"
 
 # --- Configuration ---
-FEATURE_NAME=""   # mastermind | ntn | empty = use repos only
+FEATURE_NAME=""   # mastermind | report-fix | empty = use repos only
 REPOS_BASE="$HOME/CultureX/repos"
 FEATURES_BASE="$HOME/CultureX/features"
 
@@ -37,17 +24,19 @@ FEATURES_BASE="$HOME/CultureX/features"
 # If Display Name and Executable Name are the same, you can just use "App Name|App Name|N"
 # Workspace is optional — leave it off to let the app land wherever.
 APPLICATIONS=(
+  # browsers
   "Zen Browser|Zen|1"
+
   # code editors
-  # "VS Code|Visual Studio Code|2"
+  "VS Code|Visual Studio Code|2"
   # "antigravity|antigravity|2"
-  "cursor|cursor|2"
-  "ghostty|ghostty|2"
+  # "cursor|cursor|2"
+  "ghostty|ghostty|3"
 
   # API Clients
-  # "Postman|Postman|5"
+  "Postman|Postman|4"
   # "Hoppscotch|Hoppscotch|5"
-  "yaak|yaak|4"
+  # "yaak|yaak|4"
 
   # Database Clients
   # "MongoDB Compass|MongoDB Compass|5"
@@ -72,12 +61,12 @@ resolve_repo_path() {
 validate_repo_path() {
   local name="$1"
   local path="$2"
-  [[ -d "$path" ]] || echo -e "${YELLOW}⚠ ${name} not found at ${path}${NC}"
+  [[ -d "$path" ]] || warn "${name} not found at ${path}"
 }
 
 log_repo_paths() {
   local feature_label="${FEATURE_NAME:-none}"
-  echo -e "${TEAL}→ Repo paths (feature: ${MAUVE}${feature_label}${TEAL}):${NC}"
+  log "Repo paths (feature: ${MAUVE}${feature_label}${TEAL}):${NC}"
   echo -e "  ${SUBTEXT0}cx-saas-server${NC}        → ${SERVER_PATH/#$HOME/~}"
   validate_repo_path "cx-saas-server" "$SERVER_PATH"
   echo -e "  ${SUBTEXT0}cx-analytics-backend${NC} → ${ANALYTICS_PATH/#$HOME/~}"
@@ -93,45 +82,6 @@ log_repo_paths() {
   echo ""
 }
 
-close_application() {
-  local app_name="$1"
-  local app_executable="$2"
-  echo -e "${TEAL}→ Closing ${app_name}...${NC}"
-  osascript -e "quit app \"$app_executable\"" 2>/dev/null && \
-    echo -e "${GREEN}✓ ${app_name} closed${NC}" || \
-    echo -e "${YELLOW}⚠ ${app_name} not running${NC}"
-}
-
-open_application() {
-  local app_name="$1"
-  local app_executable="$2"
-  echo -e "${TEAL}→ Opening ${app_name}...${NC}"
-  open -a "$app_executable" && \
-    echo -e "${GREEN}✓ ${app_name} opened${NC}" || \
-    echo -e "${YELLOW}⚠ Failed to open ${app_name}${NC}"
-}
-
-close_all_applications() {
-  for app in "${APPLICATIONS[@]}"; do
-    IFS='|' read -r display_name executable _workspace <<< "$app"
-    close_application "$display_name" "$executable"
-  done
-}
-
-open_all_applications() {
-  for app in "${APPLICATIONS[@]}"; do
-    IFS='|' read -r display_name executable _workspace <<< "$app"
-    open_application "$display_name" "$executable"
-  done
-}
-
-close_tmux_session() {
-  echo -e "${TEAL}→ Closing tmux session...${NC}"
-  tmux kill-session -t "$SESSION" 2>/dev/null && \
-    echo -e "${GREEN}✓ Tmux session closed${NC}" || \
-    echo -e "${YELLOW}⚠ No tmux session to close${NC}"
-}
-
 # --- Repo Paths ---
 SERVER_PATH="$(resolve_repo_path cx-saas-server)"
 ANALYTICS_PATH="$(resolve_repo_path cx-analytics-backend)"
@@ -140,23 +90,11 @@ DASHBOARD_PATH="$(resolve_repo_path cx-saas-dashboard)"
 SUPER_ADMIN_PATH="$(resolve_repo_path saas-super-admin)"
 WORKER_PATH="$(resolve_repo_path cx-worker)"
 
-# Attach from outside tmux, switch from inside it (nested attach fails).
-attach_tmux_session() {
-  if [[ -n "${TMUX:-}" ]]; then
-    exec tmux switch-client -t "$SESSION"
-  else
-    exec tmux attach -t "$SESSION"
-  fi
-}
-
 setup_tmux_session() {
-  # If tmux session exists, just attach
-  if tmux has-session -t "$SESSION" 2>/dev/null; then
-    echo -e "${TEAL}→ Attaching to existing session: ${MAUVE}$SESSION${NC}"
-    attach_tmux_session
-  fi
+  # Session already exists — attach and never come back.
+  tmux_attach_if_exists "$SESSION"
 
-  echo -e "${TEAL}→ Creating new tmux session: ${MAUVE}$SESSION${NC}"
+  log "Creating new tmux session: ${MAUVE}${SESSION}${NC}"
 
   # ---- Window 1: Server ----
   tmux new-session -d -s "$SESSION" -n "Server" -c "$SERVER_PATH"
@@ -175,7 +113,7 @@ setup_tmux_session() {
   PR_REVIEWS_TARGET="$(tmux display-message -p -t "$SESSION" '#{session_name}:#{window_index}')"
 
   # Start dev servers
-  echo -e "${TEAL}→ Starting dev servers...${NC}"
+  log "Starting dev servers..."
   sleep 0.5
   tmux send-keys -t "$SESSION:Server.0" "dev" C-m
   # tmux send-keys -t "$SESSION:Server.1" "dev" C-m
@@ -189,21 +127,21 @@ setup_tmux_session() {
   tmux select-pane -t ".0"
 
   # Attach to the session
-  attach_tmux_session
+  tmux_attach_session "$SESSION"
 }
 
 # --- Main Logic ---
 if [[ "$#" -eq 1 && "$1" == "--close" ]]; then
-  echo -e "${MAUVE}Closing all applications...${NC}"
+  heading "Closing all applications..."
   echo ""
-  close_all_applications
+  apps_close_all "${APPLICATIONS[@]}"
   echo ""
-  close_tmux_session
+  tmux_kill_session "$SESSION"
   exit 0
 fi
 
 if [[ "$#" -eq 1 && "$1" == "--tmux" ]]; then
-  echo -e "${MAUVE}Starting tmux session...${NC}"
+  heading "Starting tmux session..."
   echo ""
   log_repo_paths
   setup_tmux_session
@@ -211,23 +149,23 @@ fi
 
 if [[ "$#" -eq 2 ]] && \
   { [[ "$1" == "--tmux" && "$2" == "--close" ]] || [[ "$1" == "--close" && "$2" == "--tmux" ]]; }; then
-  echo -e "${MAUVE}Closing tmux session...${NC}"
+  heading "Closing tmux session..."
   echo ""
-  close_tmux_session
+  tmux_kill_session "$SESSION"
   exit 0
 fi
 
 if [[ "$#" -eq 1 && "$1" == "--open" ]]; then
-  echo -e "${MAUVE}Opening all applications...${NC}"
+  heading "Opening all applications..."
   echo ""
 
   # Open all applications
-  open_all_applications
+  apps_open_all "${APPLICATIONS[@]}"
 
   echo ""
   sleep 3  # Give apps time to launch
 
-  echo -e "${TEAL}→ Placing windows on AeroSpace workspaces...${NC}"
+  log "Placing windows on AeroSpace workspaces..."
   aerospace_place_from_applications "${APPLICATIONS[@]}"
   echo ""
 
@@ -239,7 +177,7 @@ if [[ "$#" -eq 1 && "$1" == "--pr-review" ]]; then
   exec "$SCRIPT_DIR/pr-review-requested.sh"
 fi
 
-echo -e "${RED}Error: Invalid argument${NC}"
+error "Invalid argument"
 echo ""
 echo -e "${YELLOW}Usage:${NC}"
 echo -e "  ${GREEN}$0 --tmux${NC}          Start or attach to the tmux session only"
