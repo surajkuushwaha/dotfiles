@@ -24,11 +24,11 @@ source "$DOTFILES_LIB/applications.sh"
 source "$DOTFILES_LIB/tmux.sh"
 # shellcheck source=../lib/aerospace-workspaces.sh
 source "$DOTFILES_LIB/aerospace-workspaces.sh"
+# shellcheck source=../lib/repos.sh
+source "$DOTFILES_LIB/repos.sh"
 
 # --- Configuration ---
 FEATURE_NAME=""   # mastermind | report-fix | empty = use repos only
-REPOS_BASE="$HOME/CultureX/repos"
-FEATURES_BASE="$HOME/CultureX/features"
 
 # --- Applications Configuration ---
 # Format: "Display Name|Executable Name|AeroSpace Workspace"
@@ -58,23 +58,6 @@ APPLICATIONS=(
 )
 
 # --- Functions ---
-resolve_repo_path() {
-  local repo="$1"
-  local feature_path="$FEATURES_BASE/$FEATURE_NAME/$repo"
-
-  if [[ -n "$FEATURE_NAME" && -d "$feature_path" ]]; then
-    echo "$feature_path"
-  else
-    echo "$REPOS_BASE/$repo"
-  fi
-}
-
-validate_repo_path() {
-  local name="$1"
-  local path="$2"
-  [[ -d "$path" ]] || warn "${name} not found at ${path}"
-}
-
 log_repo_paths() {
   local feature_label="${FEATURE_NAME:-none}"
   log "Repo paths (feature: ${MAUVE}${feature_label}${TEAL}):${NC}"

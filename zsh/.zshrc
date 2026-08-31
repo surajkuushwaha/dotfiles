@@ -162,9 +162,14 @@ sk() {
 }
 
 cx() {
-  local script="$HOME/Personal/dotfiles/automation/culturex/start-dev.sh"
-  "$script" "$@"
+  local base="$HOME/Personal/dotfiles/automation/culturex"
+  case "${1:-}" in
+    testing) shift; "$base/reset-testing-branch.sh" "$@" ;;
+    *)       "$base/start-dev.sh" "$@" ;;
+  esac
 }
+
+source "$HOME/Personal/dotfiles/automation/personal/gh-account.zsh"
 
 # ── Helpers ──
 gh-feat()    { git checkout development && git pull && git checkout -b "feat/$1"; }
