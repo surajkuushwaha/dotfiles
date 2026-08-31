@@ -5,6 +5,8 @@ tap "nikitabobko/tap"
 tap "oven-sh/bun"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
+# Bourne-Again SHell, a UNIX command interpreter
+brew "bash"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Toolchain of the web

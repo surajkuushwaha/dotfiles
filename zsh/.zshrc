@@ -166,6 +166,23 @@ cx() {
   "$script" "$@"
 }
 
+# ── Helpers ──
+gh-feat()    { git checkout development && git pull && git checkout -b "feat/$1"; }
+gh-hotfix()  { git checkout main && git pull && git checkout -b "hotfix/$1"; }
+alias prw='gh pr view --web'
+
+# ── Optional: production promotion via CLI ──
+alias pr-dashboard='gh pr create -B main -H development -t "RELEASE: Dashboard → Production" -b "Auto-generated via gh CLI."'
+alias pr-server='gh pr create -B main -H development -t "RELEASE: Server → Production" -b "Auto-generated via gh CLI."'
+alias pr-pdf='gh pr create -B main -H development -t "RELEASE: PDF Service → Production" -b "Auto-generated via gh CLI."'
+alias pr-creator='gh pr create -B main -H development -t "RELEASE: Creator Service → Production" -b "Auto-generated via gh CLI."'
+alias pr-worker='gh pr create -B main -H development -t "RELEASE: Worker Service → Production" -b "Auto-generated via gh CLI."'
+alias pr-analytics='gh pr create -B main -H development -t "RELEASE: Analytics Service → Production" -b "Auto-generated via gh CLI."'
+alias pr-superadmin='gh pr create -B main -H development -t "RELEASE: Super Admin → Production" -b "Auto-generated via gh CLI."'
+
+# Sync main → development (after a hotfix lands on main)
+alias pr-sync='gh pr create -B development -H main -t "SYNC: main → development" -b "Auto-generated via gh CLI."'
+
 export PATH=$PATH:$HOME/.spicetify
 
 # Added by Antigravity

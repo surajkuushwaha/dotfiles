@@ -26,7 +26,8 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash $HOME/.claude/statusline-mocha.sh"
+    "command": "bash $HOME/.claude/statusline-wrapper.sh",
+    "refreshInterval": 10
   },
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
@@ -35,7 +36,8 @@
     "caveman@caveman": true,
     "claude-code-wakatime@wakatime": true,
     "vercel@claude-plugins-official": false,
-    "frontend-design@claude-plugins-official": false
+    "frontend-design@claude-plugins-official": false,
+    "daily.dev@daily.dev": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -55,10 +57,50 @@
         "source": "github",
         "repo": "DietrichGebert/ponytail"
       }
+    },
+    "daily.dev": {
+      "source": {
+        "source": "github",
+        "repo": "dailydotdev/daily"
+      }
     }
   },
   "effortLevel": "high",
   "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
   "theme": "custom:catpuchine",
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "autoMode": {
+    "soft_deny": [
+      "$defaults",
+      "Bash(rm -rf:*) in /Users/suraj/CultureX/repos/cx-saas-server — irreversible local destruction beyond shipped default coverage for this project's migration/rollback workflows",
+      "Bash(pnpm dlx sequelize-cli db:migrate:undo:*) in this repo — destructive rollback of production-adjacent database migrations"
+    ],
+    "environment": [
+      "### Org-wide",
+      "**Organization**: CultureX-art (GitHub org; remote host `work:` alias, repo `CultureX-art/cx-saas-server` per upstream remote)",
+      "**Cloud provider(s)**: AWS (S3 referenced for RBAC config override; Cloudinary also seen in README asset link)",
+      "**Repository visibility**: Not queryable here (gh lookup failed) — assume private per shipped default; multiple team fork remotes (cx-ashishtripathi, cx-tirth, cx-varad, cx-vishv, cxmitul, cxpratik, cxvaibhav) plus origin (cx-suraj) and upstream (CultureX-art) suggest a private org repo with per-developer forks",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: Doppler (\"doppler login\", \"doppler setup\", \"doppler run --watch\" in CLAUDE.md; doppler used in shell history and project transcripts)",
+      "**Default / protected branches**: main (default branch); protection/rulesets not queryable here",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Source control**: This repo (cx-saas-server) and its configured remotes only — origin (cx-suraj/cx-saas-server), upstream (CultureX-art/cx-saas-server), and teammate fork remotes (cx-ashishtripathi, cx-tirth, cx-varad, cx-vishv, cxmitul, cxpratik, cxvaibhav) under the `work:` host alias",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: npm.pkg.github.com (internal package registry host referenced in config scan)",
+      "**Internal package registry**: npm.pkg.github.com (GitHub Packages, per package registry host scan)",
+      "**Sensitive data locations & audiences**: .env and other local env files (.env.development.local, .env.test.local, .env.production.local, .env.local — all gitignored); config/credentials.json; config/rbac.config.js; middleware/rbac.middleware.js; schemas/rbac.schema.js; migrations/20251230053921-create-client-service-credentials.js — share only with developers/roles cleared per this repo's RBAC config",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (Node.js/TypeScript SaaS backend — cx-saas-server)",
+      "**Trusted repo**: /Users/suraj/CultureX/repos/cx-saas-server (this repo's working directory) and its remotes (origin: cx-suraj/cx-saas-server, upstream: CultureX-art/cx-saas-server, plus teammate fork remotes) — per CLAUDE.md, do not commit directly in this repo (stage only); leave committing to the developer",
+      "**Org-specific CLIs**: rtk (83× in this project's transcripts), doppler (secrets/env management), gh (GitHub CLI, seen in shell history), ddev/dev/igbc/gbc (seen frequently in shell history but not corroborated in this project's transcripts — unverified provenance, omitted as org-specific)",
+      "**routine under cx-suraj/ prefix**: pushes to origin (cx-suraj/cx-saas-server) are routine; pushes to upstream (CultureX-art/cx-saas-server) or teammate fork remotes are not"
+    ]
+  }
 }

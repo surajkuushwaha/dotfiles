@@ -12,6 +12,9 @@
 # AeroSpace's `on-window-detected` rules in aerospace.toml already place
 # *newly opened* windows. This helper covers the other case: the app was
 # already running, so no new window is detected and no rule fires.
+#
+# Requires bash 4.4+ (associative arrays, safe empty-array expansion under
+# `set -u`). Entry scripts re-exec into one.
 
 # Format: "app|workspace" — used ONLY when aerospace_place_windows is called
 # with no arguments.
@@ -50,23 +53,18 @@ aerospace_place_windows() {
   if [[ $# -gt 0 ]]; then
     map=("$@")
   else
-    map=(${AEROSPACE_WORKSPACE_MAP[@]+"${AEROSPACE_WORKSPACE_MAP[@]}"})
+    map=("${AEROSPACE_WORKSPACE_MAP[@]}")
   fi
   [[ ${#map[@]} -eq 0 ]] && return 0
 
-  # Resolve bundle ids once — osascript is the slow part. Walk the map in
-  # reverse and skip bundles already seen, so a caller entry beats a default;
-  # then flip back so output follows the map's order. Reversal is done by
-  # prepending rather than by index, since bash and zsh index arrays
-  # differently and this file gets sourced.
-  local entry app workspace bundle seen=" "
-  local -a reversed=() deduped=() targets=()
+  # Resolve bundle ids once — osascript is the slow part. One app can appear
+  # twice (two names, same bundle); keep its first position but let the last
+  # entry decide the workspace.
+  local entry app workspace bundle
+  local -A app_of=() workspace_of=()
+  local -a order=() targets=()
 
   for entry in "${map[@]}"; do
-    reversed=("$entry" ${reversed[@]+"${reversed[@]}"})
-  done
-
-  for entry in ${reversed[@]+"${reversed[@]}"}; do
     IFS='|' read -r app workspace <<< "$entry"
     [[ -n "$app" && -n "$workspace" ]] || continue
 
@@ -75,13 +73,15 @@ aerospace_place_windows() {
       echo "  ⚠ ${app}: no bundle id, skipped"
       continue
     fi
-    [[ "$seen" == *" $bundle "* ]] && continue
-    seen+="$bundle "
 
-    deduped=("$app|$bundle|$workspace" ${deduped[@]+"${deduped[@]}"})
+    [[ -v workspace_of["$bundle"] ]] || order+=("$bundle")
+    app_of["$bundle"]="$app"
+    workspace_of["$bundle"]="$workspace"
   done
 
-  targets=(${deduped[@]+"${deduped[@]}"})
+  for bundle in "${order[@]}"; do
+    targets+=("${app_of[$bundle]}|$bundle|${workspace_of[$bundle]}")
+  done
   [[ ${#targets[@]} -eq 0 ]] && return 0
 
   local elapsed=0 pending=1
@@ -117,8 +117,7 @@ aerospace_place_windows() {
       fi
     done
 
-    # ${arr[@]+...} keeps `set -u` happy when the array is empty (bash 3.2).
-    targets=(${remaining[@]+"${remaining[@]}"})
+    targets=("${remaining[@]}")
     if [[ $pending -eq 1 ]]; then
       sleep 1
       elapsed=$((elapsed + 1))

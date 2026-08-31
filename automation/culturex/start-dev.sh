@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# Apple ships bash 3.2 (2007) at /bin/bash and it usually wins the PATH, so
+# re-exec under a modern bash when one is installed. Needed for associative
+# arrays and safe empty-array expansion under `set -u`.
+if (( BASH_VERSINFO[0] < 4 )); then
+  for _bash in /opt/homebrew/bin/bash /usr/local/bin/bash; do
+    [[ -x "$_bash" ]] && exec "$_bash" "$0" "$@"
+  done
+  echo "This script needs bash 4+. Install it with: brew install bash" >&2
+  exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SESSION="cx-dev"
 
