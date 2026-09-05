@@ -193,10 +193,13 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
 
-# Custom segment: GitHub PR number for the current branch.
-# Shows ' #<number>' colored by PR state (OPEN=blue, MERGED=green, CLOSED=red).
-# The '#<number>' is an OSC 8 hyperlink to the PR (clickable in supporting terminals).
-# A red conflict glyph is appended when the PR has merge conflicts (mergeable=CONFLICTING).
+# Custom segment: GitHub PR status for the current branch.
+# Renders a Nerd Font icon for the PR state followed by ' #<number>':
+#   open      (oct-git_pull_request, green)          draft  (oct-git_pull_request_draft, grey)
+#   merged    (oct-git_merge, magenta)               closed (oct-git_pull_request_closed, red)
+# For open PRs, small indicator glyphs follow: merge conflict (alert), CI rollup
+# (check / x / dot) and review decision (check-circle / x-circle).
+# The icon and number form one OSC 8 hyperlink to the PR (clickable in supporting terminals).
 # Hidden when gh is missing, the branch has no PR, or the command fails.
 #
 # `gh pr view` is a network call, so it NEVER runs in the prompt itself. The segment only
@@ -205,7 +208,8 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 # keep rendering while the refresh runs (stale-while-revalidate), so the prompt is instant.
 zmodload zsh/datetime 2>/dev/null           # provides $EPOCHSECONDS (a param, not a builtin)
 
-typeset -g  _PR_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/p10k-pr"
+# -v2: the cache line gained fields, so old files must not be parsed with the new layout.
+typeset -g  _PR_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/p10k-pr-v2"
 typeset -g  _PR_TTL=60                      # seconds before a cached result is refreshed
 typeset -gA _PR_FETCHING=()                 # cache key -> 1 while a fetch is in flight
 typeset -gA _PR_FD_KEY=()                   # watched fd -> cache key
@@ -220,6 +224,18 @@ function _pr_fetch_done() {
   zle && zle reset-prompt
 }
 
+# Collapse statusCheckRollup (a mix of CheckRun and StatusContext nodes) into one word.
+# CheckRun exposes .conclusion (empty while running), StatusContext exposes .state.
+typeset -g _PR_JQ='
+  (.statusCheckRollup // []) | map(.conclusion // .state // "") as $c |
+  if ($c | length) == 0 then ""
+  elif ($c | any(. == "FAILURE" or . == "ERROR" or . == "TIMED_OUT"
+                 or . == "CANCELLED" or . == "ACTION_REQUIRED" or . == "STARTUP_FAILURE")) then "FAIL"
+  elif ($c | any(. == "" or . == "PENDING" or . == "IN_PROGRESS"
+                 or . == "QUEUED" or . == "WAITING" or . == "EXPECTED")) then "PENDING"
+  else "PASS" end
+'
+
 # Refresh $file for $key in the background. No-op if a fetch is already running for $key.
 function _pr_fetch_async() {
   [[ -n ${_PR_FETCHING[$1]} ]] && return
@@ -229,9 +245,17 @@ function _pr_fetch_async() {
   # zle gets an EOF to trigger the redraw.
   exec {fd}< <(
     command mkdir -p ${file:h} 2>/dev/null
-    # @tsv emits "<number>\t<state>\t<mergeable>\t<url>"; empty when no PR or gh fails.
-    local data=$(command gh pr view --json number,state,mergeable,url \
-      --jq '[.number, .state, .mergeable, .url] | @tsv' 2>/dev/null)
+    # Plain `gh`, NOT `command gh`: automation/personal/gh-account.zsh defines a `gh`
+    # function that injects the GH_TOKEN for the account this directory maps to (work
+    # inside ~/CultureX, personal elsewhere). Bypassing it queries the wrong account,
+    # which silently reports "no PR" for repos the other account cannot see. The wrapper
+    # is inherited by this subshell; without it `gh` is just the binary, so this is safe
+    # even when the file is not sourced.
+    # @tsv emits number/state/draft/mergeable/review/checks/url; empty when no PR or gh fails.
+    local data=$(gh pr view \
+      --json number,state,isDraft,mergeable,reviewDecision,statusCheckRollup,url \
+      --jq '[.number, .state, (if .isDraft then "DRAFT" else "" end), .mergeable,
+             (.reviewDecision // ""), ('"$_PR_JQ"'), .url] | @tsv' 2>/dev/null)
     print -r -- "${EPOCHSECONDS}	${data}" > $file 2>/dev/null
   )
   # Without zle (non-interactive) there is nothing to redraw; don't leak the fd or the flag.
@@ -269,31 +293,50 @@ function prompt_pr_number() {
   if [[ -z $data ]]; then
     # Nothing cached. Show a loading hint only on the very first lookup for this branch —
     # once we know the branch has no PR, later refreshes stay silent instead of flickering.
-    (( known )) || [[ -z ${_PR_FETCHING[$key]} ]] || p10k segment -f 242 -t ' #…'
+    (( known )) || [[ -z ${_PR_FETCHING[$key]} ]] || p10k segment -f 242 -t "  "
     return
   fi
 
-  local number state mergeable url
-  IFS=$'\t' read -r number state mergeable url <<< "$data"
+  # NOT `IFS=$'\t' read`: TAB is an IFS *whitespace* character, so read collapses runs of
+  # tabs and silently drops empty fields — and isDraft/reviewDecision are empty on a plain
+  # open PR, which shifts every later field left. Quoted (@ps:...) splitting keeps empties.
+  local -a f=("${(@ps:\t:)data}")
+  local number=$f[1] state=$f[2] draft=$f[3] mergeable=$f[4] review=$f[5] checks=$f[6] url=$f[7]
   [[ -n $number ]] || return
 
-  local color
+  # Nerd Font icon + colour per state, mirroring GitHub's own colour language.
+  local icon color
   case $state in
-    OPEN)   color=blue ;;
-    MERGED) color=green ;;
-    CLOSED) color=red ;;
-    *)      color=242 ;;
+    OPEN)   if [[ $draft == DRAFT ]]; then
+              icon=$'' color=244                           # oct-git_pull_request_draft
+            else
+              icon=$'' color=green                         # oct-git_pull_request
+            fi ;;
+    MERGED) icon=$'' color=magenta ;;                      # oct-git_merge
+    CLOSED) icon=$'' color=red ;;                          # oct-git_pull_request_closed
+    *)      icon=$'' color=242 ;;
   esac
 
   # Clickable PR number via OSC 8 hyperlink. %{...%} marks the escapes as zero-width
   # so the prompt's column math stays correct.
-  local text=" #${number}"
-  if [[ -n $url ]]; then
-    text="%{"$'\e]8;;'"${url}"$'\e\\'"%} #${number}%{"$'\e]8;;'$'\e\\'"%}"
-  fi
+  local body="${icon} #${number}"
+  local text=" ${body}"
+  [[ -n $url ]] && text=" %{"$'\e]8;;'"${url}"$'\e\\'"%}${body}%{"$'\e]8;;'$'\e\\'"%}"
 
-  # Append a red warning glyph when the PR can't be merged cleanly.
-  [[ $mergeable == CONFLICTING ]] && text+="%F{red} %f"
+  # Indicator glyphs. Only meaningful while the PR is still open; a merged or closed PR
+  # would just carry stale CI/review noise.
+  if [[ $state == OPEN ]]; then
+    [[ $mergeable == CONFLICTING ]] && text+=" %F{red}"$''"%f"    # oct-alert
+    case $checks in
+      FAIL)    text+=" %F{red}"$''"%f" ;;                         # oct-x
+      PENDING) text+=" %F{yellow}"$''"%f" ;;                      # oct-dot
+      PASS)    text+=" %F{green}"$''"%f" ;;                       # oct-check
+    esac
+    case $review in
+      APPROVED)          text+=" %F{green}"$''"%f" ;;             # oct-check_circle
+      CHANGES_REQUESTED) text+=" %F{red}"$''"%f" ;;               # oct-x_circle
+    esac
+  fi
 
   p10k segment -f $color -t "$text"
 }
