@@ -51,7 +51,8 @@ APPLICATIONS=(
 
   # Database Clients
   # "MongoDB Compass|MongoDB Compass|5"
-  "Beekeeper Studio|Beekeeper Studio|5"
+  # "Beekeeper Studio|Beekeeper Studio|5"
+   "DBX|DBX|5"
 
   # Communication
   "Microsoft Teams|Microsoft Teams|0"
@@ -171,6 +172,10 @@ if [[ "$#" -eq 1 && "$1" == "--pr-review" ]]; then
   exec "$SCRIPT_DIR/pr-review-requested.sh"
 fi
 
+if [[ "$#" -eq 1 && "$1" == "--pr" ]]; then
+  exec "$SCRIPT_DIR/pr-authored.sh"
+fi
+
 error "Invalid argument"
 echo ""
 echo -e "${YELLOW}Usage:${NC}"
@@ -179,4 +184,5 @@ echo -e "  ${GREEN}$0 --tmux --close${NC}  Close only the tmux session"
 echo -e "  ${GREEN}$0 --open${NC}          Open all applications, start tmux session, and run dev servers"
 echo -e "  ${GREEN}$0 --close${NC}         Close all applications and tmux session"
 echo -e "  ${GREEN}$0 --pr-review${NC}     List open PRs awaiting your review"
+echo -e "  ${GREEN}$0 --pr${NC}            List open PRs raised by you"
 exit 1
