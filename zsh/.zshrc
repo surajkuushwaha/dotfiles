@@ -27,14 +27,20 @@ alias zed="open -a /Applications/Zed.app -n"
 
 # start the dev server - manly for the node or ts projects
 ddev() {
+  local cmd
   if [ -f "pnpm-lock.yaml" ]; then
-    doppler run --watch -- pnpm run dev
+    cmd="pnpm run dev"
+  elif [ -f "bun.lock" ]; then
+    cmd="bun run dev"
+  elif [ -f "package-lock.json" ]; then
+    cmd="npm run dev"
+  else
+    return
   fi
-  if [ -f "bun.lock" ]; then
-    doppler run --watch -- bun run dev
-  fi
-  if [ -f "package-lock.json" ]; then
-    doppler run --watch -- npm run dev
+  if [ -f ".infisical.json" ]; then
+    infisical run --env=development --command="$cmd"
+  else
+    eval "$cmd"
   fi
 }
 dev() {

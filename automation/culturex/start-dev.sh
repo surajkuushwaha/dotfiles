@@ -28,7 +28,7 @@ source "$DOTFILES_LIB/aerospace-workspaces.sh"
 source "$DOTFILES_LIB/repos.sh"
 
 # --- Configuration ---
-FEATURE_NAME=""   # mastermind | report-fix | empty = use repos only
+FEATURE_NAME="report-cron"   # mastermind | report-fix | empty = use repos only
 
 # --- Applications Configuration ---
 # Format: "Display Name|Executable Name|AeroSpace Workspace"

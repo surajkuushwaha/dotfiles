@@ -1,8 +1,10 @@
 tap "anomalyco/tap"
-tap "dopplerhq/doppler", "https://github.com/DopplerHQ/homebrew-doppler.git"
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae"
+tap "infisical/get-cli"
+tap "manaflow-ai/cmux"
 tap "nikitabobko/tap"
 tap "oven-sh/bun"
+tap "pear-devs/pear", trusted: { casks: ["pear-desktop"] }
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
 # Bourne-Again SHell, a UNIX command interpreter
@@ -17,8 +19,6 @@ brew "btop"
 brew "cbonsai"
 # Cloudflare Tunnel client (formerly Argo Tunnel)
 brew "cloudflared"
-# CLI for interacting with Doppler secrets and configuration
-brew "doppler", link: false
 # Modern, maintained replacement for ls
 brew "eza"
 # Play, record, convert, and stream select audio and video codecs
@@ -53,6 +53,8 @@ brew "mackup"
 brew "mole"
 # Open source relational database management system
 brew "mysql-client"
+# Open source relational database management system
+brew "mysql-client@8.0"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Port scanning utility for large networks
@@ -63,6 +65,8 @@ brew "ollama"
 brew "pipx"
 # Fast, disk space efficient package manager
 brew "pnpm"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
 # CLI proxy to minimize LLM token consumption
 brew "rtk"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
@@ -83,13 +87,21 @@ brew "yt-dlp"
 brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
+# The AI coding agent built for the terminal.
+brew "anomalyco/tap/opencode", trusted: true
+# The official Infisical CLI
+brew "infisical/get-cli/infisical", trusted: true
 cask "aerospace"
 # Display management tool
 cask "betterdisplay"
 # Desktop password and login vault
 cask "bitwarden"
+# Ghostty-based terminal with vertical tabs and notifications for AI coding agents
+cask "cmux"
 # Universal database tool and SQL client
 cask "dbeaver-community"
+# System-wide audio equaliser
+cask "eqmac"
 cask "font-sf-pro"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
@@ -97,40 +109,36 @@ cask "ghostty"
 cask "google-chrome"
 # Utility to hide menu bar items
 cask "hiddenbar"
-# Open source API development ecosystem
-cask "hoppscotch"
-# Clipboard manager
-cask "maccy"
 # Meet, chat, call, and collaborate in just one place
 cask "microsoft-teams"
 # Interactive tool for analyzing MongoDB data
 cask "mongodb-compass"
+# Interactive JavaScript, Python or SQL interface
+cask "mysql-shell"
 # Reverse proxy, secure introspectable tunnels to localhost
 cask "ngrok"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
-# Get up and running with large language models locally
-cask "ollama-app"
 # Android file transfer
 cask "openmtp"
 # Collaboration platform for API development
 cask "postman"
-# Peer to peer Bitorrent client
-cask "qbittorrent"
 # Control your tools with a few keystrokes
 cask "raycast"
 # Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
-# Tool to reverse the direction of scrolling
-cask "scroll-reverser"
 # Tool that provides consistent, highly configurable symbols for apps
 cask "sf-symbols"
+# Open-source BitTorrent client
+cask "transmission"
 # Open-source code editor
 cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
-# REST, GraphQL and gRPC client
-cask "yaak"
+# Menu bar toolkit with keep-awake, system monitor and volume mixer
+cask "vorssaint"
+# System tray app for automatic time tracking
+cask "wakatime"
 vscode "anthropic.claude-code"
 vscode "biomejs.biome"
 vscode "catppuccin.catppuccin-vsc"
@@ -143,21 +151,20 @@ vscode "esbenp.prettier-vscode"
 vscode "formulahendry.auto-rename-tag"
 vscode "github.vscode-pull-request-github"
 vscode "golang.go"
-vscode "gruntfuggly.todo-tree"
-vscode "kilocode.kilo-code"
 vscode "mechatroner.rainbow-csv"
-vscode "mermaidchart.vscode-mermaid-chart"
 vscode "ms-azuretools.vscode-containers"
 vscode "ms-azuretools.vscode-docker"
 vscode "ms-vscode.makefile-tools"
 vscode "oderwat.indent-rainbow"
+vscode "openai.chatgpt"
+vscode "openai.codex-audio"
 vscode "pomdtr.excalidraw-editor"
 vscode "redhat.vscode-yaml"
 vscode "simonsiefke.svg-preview"
-vscode "sst-dev.opencode"
 vscode "streetsidesoftware.code-spell-checker"
-vscode "tomoki1207.pdf"
+vscode "typescriptteam.native-preview"
 vscode "vscodevim.vim"
+vscode "vstirbu.vscode-mermaid-preview"
 vscode "wakatime.vscode-wakatime"
 vscode "wix.vscode-import-cost"
 vscode "yoavbls.pretty-ts-errors"
@@ -166,18 +173,22 @@ go "github.com/ashishxcode/commit-chronicle/cmd/commit-chronicle"
 go "github.com/melkeydev/go-blueprint"
 go "golang.org/x/tools/gopls"
 npm "@bitwarden/cli"
+npm "@dbx-app/mcp-server"
 npm "@fission-ai/openspec"
 npm "@github/copilot"
 npm "@hoppscotch/cli"
 npm "@mariozechner/pi-coding-agent"
-npm "@openai/codex"
 npm "@yaakapp/cli"
+npm "9router"
 npm "agent-browser"
 npm "artillery"
+npm "better-sqlite3"
 npm "corepack"
 npm "jscpd"
 npm "node-gyp"
 npm "nodemon"
 npm "serverless"
+npm "sql.js"
+npm "systray2"
 npm "typescript"
 npm "yarn"
