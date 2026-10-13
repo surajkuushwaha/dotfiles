@@ -18,6 +18,14 @@ source $ZDOTDIR/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 source <(fzf --zsh)
 
+# Catppuccin Mocha theme for fzf
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1E1E2E,spinner:#F5E0DC,hl:#F38BA8 \
+--color=fg:#CDD6F4,header:#F38BA8,info:#CBA6F7,pointer:#F5E0DC \
+--color=marker:#B4BEFE,fg+:#CDD6F4,prompt:#CBA6F7,hl+:#F38BA8 \
+--color=selected-bg:#45475A \
+--color=border:#6C7086,label:#CDD6F4"
+
 
 
 # zsh plugin
@@ -68,7 +76,14 @@ alias gst='git status'
 alias gl='git log --oneline --graph --decorate'
 alias glo='git log --oneline'
 alias igbc='git checkout $(git for-each-ref --sort=-committerdate --format "%(refname:short)" refs/heads/ | fzf)'
-alias igpc='gh pr checkout'
+igpc() {
+  if [[ $# -gt 0 ]]; then gh pr checkout "$@"; return; fi
+  local pr
+  pr=$(gh pr list --limit 100 --json number,title,headRefName,author \
+    --template '{{range .}}{{printf "#%v\t%s\t%s\t@%s\n" .number .headRefName .title .author.login}}{{end}}' \
+    | column -t -s $'\t' | fzf --prompt='PR> ') || return
+  gh pr checkout "${${pr%% *}#\#}"
+}
 alias gc="git commit -m"
 alias gca="git commit -a -m"
 alias gp="git push origin HEAD"
@@ -170,7 +185,7 @@ sk() {
 cx() {
   local base="$HOME/Personal/dotfiles/automation/culturex"
   case "${1:-}" in
-    testing) shift; "$base/reset-testing-branch.sh" "$@" ;;
+    recreate) shift; "$base/recreate-testing-branch.sh" "$@" ;;
     *)       "$base/start-dev.sh" "$@" ;;
   esac
 }
