@@ -18,7 +18,9 @@ stow .
 stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude
 ```
 
-Packages ignored by `.stowrc`: automation, zshenv, claude, README.md, CLAUDE.md, Brewfile, install-macos.sh.
+Packages ignored by `.stowrc`: automation, zshenv, claude, README.md, CLAUDE.md, Brewfile, install-macos.sh, macos.
+
+`macos/<domain>.plist`: app settings from `defaults export`, imported by `install-macos.sh`. Strip machine-specific and personal keys (window sizes, timestamps, bookmarks, notes) before committing.
 
 Fresh Mac bootstrap: `./install-macos.sh` (Brewfile, Oh My Zsh, stow, tmux plugins, gh-dash, spicetify).
 

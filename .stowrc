@@ -8,3 +8,4 @@
 --ignore=claude
 --ignore=Brewfile
 --ignore=install-macos.sh
+--ignore=macos

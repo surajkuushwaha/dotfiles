@@ -68,6 +68,14 @@ if [[ ! -x "$HOME/.spicetify/spicetify" ]]; then
   curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
 fi
 
+step "App settings"
+# Exported with: defaults export <domain> macos/<domain>.plist
+for plist in "$DOTFILES"/macos/*.plist; do
+  domain="$(basename "$plist" .plist)"
+  osascript -e "quit app id \"$domain\"" 2>/dev/null || true
+  defaults import "$domain" "$plist"
+done
+
 step "Services"
 brew services start sketchybar || true
 brew services start borders || true
