@@ -124,6 +124,8 @@ cask "ghostty"
 cask "google-chrome"
 # Utility to hide menu bar items
 cask "hiddenbar"
+# Multi-platform app that allows your devices to communicate
+cask "kde-connect"
 # Meet, chat, call, and collaborate in just one place
 cask "microsoft-teams"
 # Interactive tool for analyzing MongoDB data
