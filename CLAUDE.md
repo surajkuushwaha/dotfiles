@@ -18,7 +18,9 @@ stow .
 stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude
 ```
 
-Packages ignored by `.stowrc`: automation, zshenv, claude, README.md, CLAUDE.md.
+Packages ignored by `.stowrc`: automation, zshenv, claude, README.md, CLAUDE.md, Brewfile, install-macos.sh.
+
+Fresh Mac bootstrap: `./install-macos.sh` (Brewfile, Oh My Zsh, stow, tmux plugins, gh-dash, spicetify).
 
 ## Package Layout
 

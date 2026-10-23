@@ -1,0 +1,7 @@
+[core]
+	editor = nano
+[user]
+	name = Suraj Kushwaha
+	email = surajkuushwaha@gmail.com
+[alias]
+	base = "!f() { \\\ncurrent=$(git branch --show-current); \\\ngit for-each-ref --format=\"%(refname:short)\" refs/heads | \\\nwhile read b; do \\\n  [ \"$b\" = \"$current\" ] && continue; \\\n  base=$(git merge-base \"$current\" \"$b\"); \\\n  printf \"%s %s\\n\" \"$(git show -s --format=%ct \"$base\")\" \"$b\"; \\\ndone | sort -nr | head -1 | cut -d\" \" -f2; \\\n}; f"

@@ -1,6 +1,15 @@
 # dotfiles
 
-## Installation
+## Quick Start (macOS)
+
+```bash
+git clone <repository-url> ~/Personal/dotfiles
+~/Personal/dotfiles/install-macos.sh
+```
+
+Installs Homebrew and everything in `Brewfile`, Oh My Zsh with Powerlevel10k and plugins, stows all packages, then sets up tmux plugins, gh-dash and spicetify. Safe to re-run.
+
+## Installation (manual)
 
 ### Prerequisites
 

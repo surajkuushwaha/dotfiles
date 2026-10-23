@@ -2,6 +2,7 @@ tap "anomalyco/tap"
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae"
 tap "infisical/get-cli"
 tap "manaflow-ai/cmux"
+tap "mongodb/brew"
 tap "nikitabobko/tap"
 tap "oven-sh/bun"
 tap "pear-devs/pear", trusted: { casks: ["pear-desktop"] }
@@ -19,6 +20,8 @@ brew "btop"
 brew "cbonsai"
 # Cloudflare Tunnel client (formerly Argo Tunnel)
 brew "cloudflared"
+# CLI for interacting with Doppler secrets and configuration
+brew "doppler"
 # Modern, maintained replacement for ls
 brew "eza"
 # Play, record, convert, and stream select audio and video codecs
@@ -67,6 +70,8 @@ brew "pipx"
 brew "pnpm"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Safe, concurrent, practical language
+brew "rust"
 # CLI proxy to minimize LLM token consumption
 brew "rtk"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
@@ -91,6 +96,12 @@ brew "zsh"
 brew "anomalyco/tap/opencode", trusted: true
 # The official Infisical CLI
 brew "infisical/get-cli/infisical", trusted: true
+# A window border system for macOS
+brew "felixkratz/formulae/borders"
+# Custom macOS statusbar with shell plugin, interaction and graph support
+brew "felixkratz/formulae/sketchybar"
+# Standard utilities for interacting with MongoDB
+brew "mongodb/brew/mongodb-database-tools"
 cask "aerospace"
 # Display management tool
 cask "betterdisplay"
@@ -102,7 +113,11 @@ cask "cmux"
 cask "dbeaver-community"
 # System-wide audio equaliser
 cask "eqmac"
+cask "font-hack-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
 cask "font-sf-pro"
+# Set of tools to manage resources and applications hosted on Google Cloud
+cask "gcloud-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Web browser
@@ -139,6 +154,8 @@ cask "vlc"
 cask "vorssaint"
 # System tray app for automatic time tracking
 cask "wakatime"
+# Multiplayer code editor
+cask "zed"
 vscode "anthropic.claude-code"
 vscode "biomejs.biome"
 vscode "catppuccin.catppuccin-vsc"

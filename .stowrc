@@ -6,3 +6,5 @@
 --ignore=CLAUDE.md
 --ignore=zshenv
 --ignore=claude
+--ignore=Brewfile
+--ignore=install-macos.sh
