@@ -66,8 +66,12 @@ The dotfiles stay on the HTTPS URL they were cloned with until the personal acco
 
 ### 6. Copy CultureX
 
+macOS ships openrsync at `/usr/bin/rsync`, which rejects `--info=progress2`. If `/usr/bin` comes before `/opt/homebrew/bin` in your PATH, the alias makes steps 6–7 use Homebrew's rsync.
+
 ```bash
 brew install rsync
+alias rsync=/opt/homebrew/bin/rsync
+rsync --version | head -1     # should say: rsync  version 3.x
 rsync -aH --info=progress2 \
   --exclude node_modules --exclude .next --exclude .turbo --exclude .DS_Store \
   ~/CultureX surajkushwaha@Surajs-MacBook-Air-2.local:~/
