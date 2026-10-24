@@ -9,3 +9,4 @@
 --ignore=Brewfile
 --ignore=install-macos.sh
 --ignore=macos
+--ignore=MIGRATION.md
