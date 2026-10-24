@@ -26,8 +26,9 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-step "Brewfile"
-brew bundle install --file="$DOTFILES/Brewfile"
+step "Brewfile ($(grep -cE '^(brew|cask|vscode|go|npm) ' "$DOTFILES/Brewfile") entries)"
+# --verbose streams each install's download progress instead of one line per package.
+brew bundle install --verbose --file="$DOTFILES/Brewfile"
 
 step "Oh My Zsh"
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
@@ -35,7 +36,7 @@ if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
 fi
 
 clone() {
-  [[ -d "$2" ]] || git clone --depth=1 "$1" "$2"
+  [[ -d "$2" ]] || git clone --progress --depth=1 "$1" "$2"
 }
 
 step "Zsh theme and plugins"
