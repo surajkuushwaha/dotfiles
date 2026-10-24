@@ -83,35 +83,45 @@ About 10 GB before excludes. Re-running it only copies what changed.
 
 Conversation folders are named after the project path, so they get renamed from `-Users-suraj-` to `-Users-surajkushwaha-`, and the old path inside them is rewritten.
 
-Each command asks for the new Mac's password.
+Open one shared SSH connection first, so the password is typed once instead of for every command:
 
 ```bash
 NEW=surajkushwaha@Surajs-MacBook-Air-2.local
+nssh() { ssh -o ControlPath=/tmp/cm-newmac "$@"; }   # reuses the shared connection
+ssh -o ControlMaster=yes -o ControlPath=/tmp/cm-newmac -o ControlPersist=20m -fN $NEW
+```
 
+Then copy:
+
+```bash
 # conversations + memory, CultureX folders only.
 # Folder names start with "-", so the "./" stops rsync reading them as options.
-ssh $NEW 'mkdir -p ~/.claude/projects'
+nssh $NEW 'mkdir -p ~/.claude/projects'
 cd ~/.claude/projects
 for d in -Users-suraj-CultureX*; do
-  rsync -a "./$d/" "$NEW:.claude/projects/${d/-Users-suraj-/-Users-surajkushwaha-}/"
+  rsync -a -e "ssh -o ControlPath=/tmp/cm-newmac" "./$d/" "$NEW:.claude/projects/${d/-Users-suraj-/-Users-surajkushwaha-}/"
 done
-ssh $NEW 'cd ~/.claude/projects && LC_ALL=C find . -name "*.jsonl" -exec sed -i "" "s#/Users/suraj/#/Users/surajkushwaha/#g" {} +'
+nssh $NEW 'cd ~/.claude/projects && LC_ALL=C find . -name "*.jsonl" -exec sed -i "" "s#/Users/suraj/#/Users/surajkushwaha/#g" {} +'
 
 # up-arrow prompt history, CultureX prompts only.
 # This appends, so it only runs while the new Mac has no history yet.
-if [[ "$(ssh $NEW 'wc -l < ~/.claude/history.jsonl 2>/dev/null || echo 0' | tr -d ' ')" == 0 ]]; then
+lines=$(nssh $NEW 'f=~/.claude/history.jsonl; [ -f $f ] && wc -l < $f || echo 0' | tr -d ' ')
+if [[ -z $lines ]]; then
+  echo "could not reach the new Mac, history not copied"
+elif [[ $lines == 0 ]]; then
   jq -c 'select(.project | startswith("/Users/suraj/CultureX"))' ~/.claude/history.jsonl \
     | sed 's#/Users/suraj/#/Users/surajkushwaha/#g' \
-    | ssh $NEW 'cat >> ~/.claude/history.jsonl'
+    | nssh $NEW 'cat >> ~/.claude/history.jsonl'
 else
-  echo "history.jsonl already on the new Mac, skipped"
+  echo "history.jsonl already on the new Mac ($lines lines), skipped"
 fi
 
 # skills (cx-* live in ~/.agents/skills, ~/.claude/skills links to them) and hooks
-rsync -aH ~/.agents $NEW:
-rsync -aH ~/.claude/skills ~/.claude/hooks ~/.claude/agents $NEW:.claude/
+rsync -aH -e "ssh -o ControlPath=/tmp/cm-newmac" ~/.agents $NEW:
+rsync -aH -e "ssh -o ControlPath=/tmp/cm-newmac" ~/.claude/skills ~/.claude/hooks ~/.claude/agents $NEW:.claude/
 
-ssh $NEW 'ls ~/.claude/projects | grep -c CultureX'   # expect 24
+nssh $NEW 'ls ~/.claude/projects | grep -c "^-Users-surajkushwaha-CultureX"'   # should match: ls ~/.claude/projects | grep -c "^-Users-suraj-CultureX"
+ssh -o ControlPath=/tmp/cm-newmac -O exit $NEW          # close the shared connection
 ```
 
 Running this block twice is harmless: rsync only copies changes, the history step skips itself, and the `sed` can't match twice because `/Users/surajkushwaha/` does not contain `/Users/suraj/`.
