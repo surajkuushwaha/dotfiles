@@ -68,8 +68,6 @@ brew "nmap"
 brew "ollama"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
-# Fast, disk space efficient package manager
-brew "pnpm"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Safe, concurrent, practical language
@@ -99,12 +97,12 @@ brew "anomalyco/tap/opencode", trusted: true
 # The official Infisical CLI
 brew "infisical/get-cli/infisical", trusted: true
 # A window border system for macOS
-brew "felixkratz/formulae/borders"
+brew "felixkratz/formulae/borders", trusted: true
 # Custom macOS statusbar with shell plugin, interaction and graph support
-brew "felixkratz/formulae/sketchybar"
+brew "felixkratz/formulae/sketchybar", trusted: true
 # Standard utilities for interacting with MongoDB
-brew "mongodb/brew/mongodb-database-tools"
-cask "aerospace"
+brew "mongodb/brew/mongodb-database-tools", trusted: true
+cask "nikitabobko/tap/aerospace", trusted: true
 # Google's agent-first IDE
 cask "antigravity-ide"
 # Cross platform SQL editor and database management app
@@ -116,7 +114,7 @@ cask "bitwarden"
 # OpenAI's official ChatGPT desktop app
 cask "chatgpt"
 # Ghostty-based terminal with vertical tabs and notifications for AI coding agents
-cask "cmux"
+cask "manaflow-ai/cmux/cmux", trusted: true
 # Universal database tool and SQL client
 cask "dbeaver-community"
 # Database management tool
@@ -246,4 +244,3 @@ npm "serverless"
 npm "sql.js"
 npm "systray2"
 npm "typescript"
-npm "yarn"

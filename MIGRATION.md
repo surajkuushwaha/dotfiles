@@ -101,7 +101,7 @@ cd ~/.claude/projects
 for d in -Users-suraj-CultureX*; do
   rsync -a -e "ssh -o ControlPath=/tmp/cm-newmac" "./$d/" "$NEW:.claude/projects/${d/-Users-suraj-/-Users-surajkushwaha-}/"
 done
-nssh $NEW 'cd ~/.claude/projects && LC_ALL=C find . -name "*.jsonl" -exec sed -i "" "s#/Users/suraj/#/Users/surajkushwaha/#g" {} +'
+nssh $NEW 'cd ~/.claude/projects && LC_ALL=C grep -rlI /Users/suraj/ ./-Users-surajkushwaha-CultureX* | xargs sed -i "" "s#/Users/suraj/#/Users/surajkushwaha/#g"'
 
 # up-arrow prompt history, CultureX prompts only.
 # This appends, so it only runs while the new Mac has no history yet.

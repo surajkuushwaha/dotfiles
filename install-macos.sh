@@ -26,13 +26,28 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-step "Brewfile ($(grep -cE '^(brew|cask|vscode|go|npm) ' "$DOTFILES/Brewfile") entries)"
+step "Brewfile ($(grep -cE '^(brew|cask|vscode|go) ' "$DOTFILES/Brewfile") entries)"
+# brew bundle runs `npm install -g` without node on PATH (env: node: No such file),
+# so npm entries are left out here and installed one by one below.
+brewfile="$(mktemp)"
+grep -v '^npm ' "$DOTFILES/Brewfile" > "$brewfile"
 # --verbose streams each install's download progress instead of one line per package.
-brew bundle install --verbose --file="$DOTFILES/Brewfile"
+brew bundle install --verbose --file="$brewfile"
+rm -f "$brewfile"
+
+step "npm globals"
+# One at a time, so a package whose native build fails doesn't block the rest.
+command -v node >/dev/null 2>&1 || brew install node
+npm_failed=""
+for pkg in $(grep -E '^npm "' "$DOTFILES/Brewfile" | cut -d'"' -f2); do
+  npm ls -g --depth=0 "$pkg" >/dev/null 2>&1 || npm install -g "$pkg" || npm_failed="$npm_failed $pkg"
+done
+[[ -z "$npm_failed" ]] || echo "npm packages that failed to install:$npm_failed"
 
 step "Oh My Zsh"
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-  RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  # ZSH is set because the installer otherwise picks $ZDOTDIR/ohmyzsh, i.e. this repo.
+  ZSH="$HOME/.oh-my-zsh" RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
 clone() {
@@ -66,7 +81,10 @@ fi
 
 step "Spicetify"
 if [[ ! -x "$HOME/.spicetify/spicetify" ]]; then
-  curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh
+  # Runs from a temp dir because the installer writes install.log to the current directory.
+  (cd "$(mktemp -d)" && curl -fsSL https://raw.githubusercontent.com/spicetify/cli/main/install.sh | sh)
+  # The installer appends its own PATH line; .zshrc already has one.
+  perl -0pi -e 's/\n+export PATH=\$PATH:\Q$ENV{HOME}\E\/\.spicetify\n\z/\n/' "$DOTFILES/zsh/.zshrc"
 fi
 
 step "App settings"
@@ -76,6 +94,15 @@ for plist in "$DOTFILES"/macos/*.plist; do
   osascript -e "quit app id \"$domain\"" 2>/dev/null || true
   defaults import "$domain" "$plist"
 done
+
+step "SketchyBar app font"
+# icon_map.sh is gitignored and must match the font release, so both come from the same tag.
+SKETCHYBAR_FONT_VERSION="v2.0.40"
+font_url="https://github.com/kvndrsslr/sketchybar-app-font/releases/download/$SKETCHYBAR_FONT_VERSION"
+[[ -f "$HOME/Library/Fonts/sketchybar-app-font.ttf" ]] ||
+  curl -fsSL "$font_url/sketchybar-app-font.ttf" -o "$HOME/Library/Fonts/sketchybar-app-font.ttf"
+[[ -f "$DOTFILES/sketchybar/icon_map.sh" ]] ||
+  curl -fsSL "$font_url/icon_map.sh" -o "$DOTFILES/sketchybar/icon_map.sh"
 
 step "Services"
 brew services start sketchybar || true

@@ -1,12 +1,12 @@
 --target=~/.config
 --ignore=.stowrc
 --ignore=DS_Store
---ignore=automation
+--ignore=^automation$
 --ignore=README.md
 --ignore=CLAUDE.md
---ignore=zshenv
---ignore=claude
---ignore=Brewfile
+--ignore=^zshenv$
+--ignore=^claude$
+--ignore=^Brewfile$
 --ignore=install-macos.sh
---ignore=macos
+--ignore=^macos$
 --ignore=MIGRATION.md
