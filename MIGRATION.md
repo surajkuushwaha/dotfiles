@@ -132,17 +132,27 @@ Skip `~/.claude.json` if the company Mac uses a different Claude account; re-add
 
 ### 8. Repair the worktrees
 
-Worktrees store absolute paths to their main repo.
+Worktrees store absolute paths to their main repo, in both directions. `git worktree repair` stops with "invalid path" when those paths don't exist, so rewrite them directly.
 
 ```zsh
-for repo in ~/CultureX/repos/*(/); do
-  wts=( ~/CultureX/features/*/${repo:t}(N) )
-  (( $#wts )) && git -C $repo worktree repair $wts
+# worktree side: each worktree's .git file (files only, so real clones are skipped)
+for f in ~/CultureX/features/*/*/.git(.N); do
+  sed -i '' 's#/Users/suraj/#/Users/surajkushwaha/#' $f
 done
-git -C ~/CultureX/repos/cx-saas-server worktree list
+# main repo side: each repo's list of its worktrees
+for f in ~/CultureX/repos/*/.git/worktrees/*/gitdir(N); do
+  sed -i '' 's#/Users/suraj/#/Users/surajkushwaha/#' $f
+done
+
+for r in ~/CultureX/repos/*(/); do git -C $r worktree list; done
 ```
 
-Every path in the list should start with `/Users/surajkushwaha/`.
+Every path should start with `/Users/surajkushwaha/`. The `cx-creator-services` worktree under `~/orca/workspaces/` was not copied and shows as prunable. Remove its leftover entry (files are not touched):
+
+```bash
+git -C ~/CultureX/repos/cx-creator-services worktree prune --dry-run -v   # should list only the orca one
+git -C ~/CultureX/repos/cx-creator-services worktree prune -v
+```
 
 ### 8b. Point remotes at `github.com`
 
