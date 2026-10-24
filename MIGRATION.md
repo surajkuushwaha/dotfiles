@@ -2,7 +2,7 @@
 
 Moves `~/CultureX` (with stashes, worktrees, unpushed commits, `.env` files) and the CultureX Claude Code history from the old Mac (user `suraj`) to the new Mac (user `surajkushwaha`). Everything else comes from this repo.
 
-Throughout, replace `New-Mac.local` with the address the new Mac shows in step 3.
+New Mac: `surajkushwaha@Surajs-MacBook-Air-2.local`. Old Mac: `suraj`.
 
 ## On the old Mac
 
@@ -24,7 +24,7 @@ Close every Claude Code session so the history files stop changing.
 
 ### 3. Turn on Remote Login
 
-System Settings → General → Sharing → **Remote Login** → on. The page shows the address, e.g. `ssh surajkushwaha@New-Mac.local`. Keep both Macs on the same Wi-Fi.
+System Settings → General → Sharing → **Remote Login** → on. The page shows the address, e.g. `ssh surajkushwaha@Surajs-MacBook-Air-2.local`. Keep both Macs on the same Wi-Fi.
 
 ### 4. Install the dotfiles
 
@@ -54,7 +54,7 @@ git -C ~/Personal/dotfiles remote set-url origin git@github.com:surajkuushwaha/d
 brew install rsync
 rsync -aH --info=progress2 \
   --exclude node_modules --exclude .next --exclude .turbo --exclude .DS_Store \
-  ~/CultureX surajkushwaha@New-Mac.local:~/
+  ~/CultureX surajkushwaha@Surajs-MacBook-Air-2.local:~/
 ```
 
 About 10 GB before excludes. Re-running it only copies what changed.
@@ -64,7 +64,7 @@ About 10 GB before excludes. Re-running it only copies what changed.
 Conversation folders are named after the project path, so they get renamed from `-Users-suraj-` to `-Users-surajkushwaha-`, and the old path inside them is rewritten.
 
 ```bash
-NEW=surajkushwaha@New-Mac.local
+NEW=surajkushwaha@Surajs-MacBook-Air-2.local
 
 # conversations + memory, CultureX folders only
 ssh $NEW 'mkdir -p ~/.claude/projects'
@@ -146,7 +146,7 @@ Turn Remote Login back off (System Settings → General → Sharing).
 - `~/Personal` repos (only the dotfiles come from GitHub).
 - Shell history. To bring it, from the old Mac:
   ```bash
-  rsync -a ~/Personal/dotfiles/zsh/.zsh_history surajkushwaha@New-Mac.local:~/Personal/dotfiles/zsh/
-  rsync -a ~/.local/share/atuin surajkushwaha@New-Mac.local:~/.local/share/
+  rsync -a ~/Personal/dotfiles/zsh/.zsh_history surajkushwaha@Surajs-MacBook-Air-2.local:~/Personal/dotfiles/zsh/
+  rsync -a ~/.local/share/atuin surajkushwaha@Surajs-MacBook-Air-2.local:~/.local/share/
   ```
 - Claude conversations from non-CultureX folders.
