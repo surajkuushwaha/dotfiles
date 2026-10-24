@@ -52,6 +52,8 @@ brew "jq"
 brew "python@3.14"
 # Keep your Mac's application settings in sync
 brew "mackup"
+# Mac App Store command-line interface
+brew "mas"
 # Deep clean and optimize your Mac
 brew "mole"
 # Open source relational database management system
@@ -103,14 +105,24 @@ brew "felixkratz/formulae/sketchybar"
 # Standard utilities for interacting with MongoDB
 brew "mongodb/brew/mongodb-database-tools"
 cask "aerospace"
+# Google's agent-first IDE
+cask "antigravity-ide"
+# Cross platform SQL editor and database management app
+cask "beekeeper-studio"
 # Display management tool
 cask "betterdisplay"
 # Desktop password and login vault
 cask "bitwarden"
+# OpenAI's official ChatGPT desktop app
+cask "chatgpt"
 # Ghostty-based terminal with vertical tabs and notifications for AI coding agents
 cask "cmux"
 # Universal database tool and SQL client
 cask "dbeaver-community"
+# Database management tool
+cask "dbx"
+# App to build and share containerised applications and microservices
+cask "docker-desktop"
 # System-wide audio equaliser
 cask "eqmac"
 cask "font-hack-nerd-font"
@@ -122,6 +134,10 @@ cask "gcloud-cli"
 cask "ghostty"
 # Web browser
 cask "google-chrome"
+# Speech to text application
+cask "handy"
+# Chromium-based web browser
+cask "helium-browser"
 # Utility to hide menu bar items
 cask "hiddenbar"
 # Multi-platform app that allows your devices to communicate
@@ -132,8 +148,12 @@ cask "microsoft-teams"
 cask "mongodb-compass"
 # Interactive JavaScript, Python or SQL interface
 cask "mysql-shell"
+# Visual tool to design, develop and administer MySQL servers
+cask "mysqlworkbench"
 # Reverse proxy, secure introspectable tunnels to localhost
 cask "ngrok"
+# Client-side GUI application for modern database development and operations
+cask "nosql-workbench"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
 # Android file transfer
@@ -146,6 +166,8 @@ cask "raycast"
 cask "rectangle"
 # Tool that provides consistent, highly configurable symbols for apps
 cask "sf-symbols"
+# Open-source media center
+cask "stremio"
 # Open-source BitTorrent client
 cask "transmission"
 # Open-source code editor
@@ -158,6 +180,20 @@ cask "vorssaint"
 cask "wakatime"
 # Multiplayer code editor
 cask "zed"
+# Gecko based web browser
+cask "zen"
+mas "Numbers", id: 409203825
+mas "PDFgear", id: 6469021132
+mas "WhatsApp", id: 310633997
+# Not in Homebrew or not found in the App Store: install by hand
+#   CollaNote       - App Store, search by name
+#   Munder Difflin  - munderdiffl.in (in.munderdiffl.app)
+#   Orca            - Stably AI coding agent app (com.stablyai.orca)
+#   PlayTorrio      - streaming app (com.example.playtorrio)
+#   Plexo           - com.plexo.app
+#   Sideloadly      - iOS sideloading tool, sideloadly.io
+#   SKlauncher      - Minecraft launcher, skmedix.pl
+#   Whiteboard      - dev.fast.review
 vscode "anthropic.claude-code"
 vscode "biomejs.biome"
 vscode "catppuccin.catppuccin-vsc"
