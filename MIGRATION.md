@@ -37,14 +37,30 @@ brew install rsync
 
 If `brew bundle` stops on an app that is already installed, run `brew install --cask --adopt <name>` and re-run the script.
 
-### 5. Log in to GitHub and add a new SSH key
+### 5. Log in to GitHub as `cx-suraj`
+
+`cx-suraj` is the default account on this Mac: plain `git@github.com:` URLs use its key, so there is no `work` host alias like on the old Mac. The personal account gets added later (see the end of this guide).
 
 ```bash
-gh auth login
-ssh-keygen -t ed25519
-gh ssh-key add ~/.ssh/id_ed25519.pub --title "Company Mac"
-git -C ~/Personal/dotfiles remote set-url origin git@github.com:surajkuushwaha/dotfiles.git
+gh auth login --hostname github.com --git-protocol ssh --web   # sign in as cx-suraj
+
+ssh-keygen -t ed25519 -C cx-suraj -f ~/.ssh/id_ed25519_cx
+gh ssh-key add ~/.ssh/id_ed25519_cx.pub --title "CultureX MacBook Air"
+
+cat >> ~/.ssh/config <<'EOF'
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_cx
+  IdentitiesOnly yes
+  AddKeysToAgent yes
+  UseKeychain yes
+EOF
+
+ssh -T git@github.com    # should say: Hi cx-suraj!
 ```
+
+The dotfiles stay on the HTTPS URL they were cloned with until the personal account is set up.
 
 ## On the old Mac
 
@@ -104,6 +120,24 @@ git -C ~/CultureX/repos/cx-saas-server worktree list
 
 Every path in the list should start with `/Users/surajkushwaha/`.
 
+### 8b. Point remotes at `github.com`
+
+On the old Mac remotes used the `work` alias (`git@work:cx-suraj/cx-saas-server.git`). Rewrite them to `git@github.com:cx-suraj/cx-saas-server.git`. Worktrees share their main repo's remotes, so only the main repos need it.
+
+```zsh
+for repo in ~/CultureX/repos/*(/) ~/CultureX/exp/*(/N); do
+  [[ -d $repo/.git ]] || continue
+  for name in $(git -C $repo remote); do
+    url=$(git -C $repo remote get-url $name)
+    [[ $url == git@work:* ]] && git -C $repo remote set-url $name "git@github.com:${url#git@work:}"
+  done
+done
+grep -rl 'git@work:' ~/CultureX/*/*/.git/config || echo "no work remotes left"
+git -C ~/CultureX/repos/cx-saas-server fetch origin
+```
+
+Your work email (`suraj.kushwaha@culturex.in`) is set per repo in each `.git/config`, so it came along with the copy.
+
 ### 9. Fix old paths in the dotfiles
 
 The RTK hook and two permission rules in `claude/dot-claude/settings.json` point at `/Users/suraj/`, so Claude Code hooks fail until this is fixed.
@@ -113,8 +147,10 @@ cd ~/Personal/dotfiles
 git grep -n '/Users/suraj/'
 git grep -l '/Users/suraj/' | xargs sed -i '' 's#/Users/suraj/#/Users/surajkushwaha/#g'
 git grep -n '/Users/suraj/' || echo "all fixed"
-git commit -am "fix: update home paths for new Mac" && git push
+git commit -am "fix: update home paths for new Mac"
 ```
+
+Push this once the personal account is added: `cx-suraj` can't push to `surajkuushwaha/dotfiles`.
 
 ### 10. Reinstall dependencies
 
@@ -140,6 +176,32 @@ Then `cd ~/CultureX/repos/cx-saas-server && claude --resume`; your old conversat
 ### 12. Clean up
 
 Turn Remote Login back off (System Settings → General → Sharing).
+
+## Later: add the personal account
+
+`cx-suraj` keeps `github.com`. The personal account gets its own host alias, `github-personal`.
+
+```bash
+gh auth login --hostname github.com --git-protocol ssh --web   # sign in as surajkuushwaha
+gh auth switch -u cx-suraj                                      # keep cx-suraj as the default
+
+ssh-keygen -t ed25519 -C surajkuushwaha -f ~/.ssh/id_ed25519_personal
+GH_TOKEN=$(gh auth token -u surajkuushwaha) gh ssh-key add ~/.ssh/id_ed25519_personal.pub --title "CultureX MacBook Air"
+
+cat >> ~/.ssh/config <<'EOF'
+Host github-personal
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_personal
+  IdentitiesOnly yes
+EOF
+
+ssh -T git@github-personal    # should say: Hi surajkuushwaha!
+git -C ~/Personal/dotfiles remote set-url origin git@github-personal:surajkuushwaha/dotfiles.git
+git -C ~/Personal/dotfiles push
+```
+
+Clone personal repos as `git@github-personal:surajkuushwaha/<repo>.git`. `gh` already picks the right account per folder (`automation/personal/gh-account.zsh`: `cx-suraj` in `~/CultureX`, personal elsewhere).
 
 ## Not carried over
 
