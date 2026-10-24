@@ -174,17 +174,19 @@ Your work email (`suraj.kushwaha@culturex.in`) is set per repo in each `.git/con
 
 ### 9. Fix old paths in the dotfiles
 
-The RTK hook and two permission rules in `claude/dot-claude/settings.json` point at `/Users/suraj/`, so Claude Code hooks fail until this is fixed.
+`claude/dot-claude/settings.json` no longer hardcodes a home folder: the RTK hook runs `$HOME/.claude/hooks/rtk-rewrite.sh` and the two rules say `~/CultureX/...`, so it works on both Macs. Pull it, then check nothing else still points at the old home:
 
 ```bash
 cd ~/Personal/dotfiles
-git grep -n '/Users/suraj/'
-git grep -l '/Users/suraj/' | xargs sed -i '' 's#/Users/suraj/#/Users/surajkushwaha/#g'
-git grep -n '/Users/suraj/' || echo "all fixed"
-git commit -am "fix: update home paths for new Mac"
+git pull
+git grep -n '/Users/suraj/' || echo "no old paths left"
 ```
 
-Push this once the personal account is added: `cx-suraj` can't push to `surajkuushwaha/dotfiles`.
+Test the RTK hook (should print `rtk git status`):
+
+```bash
+echo '{"tool_name":"Bash","tool_input":{"command":"git status"}}' | ~/.claude/hooks/rtk-rewrite.sh | jq -r '.hookSpecificOutput.updatedInput.command'
+```
 
 ### 10. Reinstall dependencies
 

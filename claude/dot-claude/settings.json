@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/suraj/.claude/hooks/rtk-rewrite.sh"
+            "command": "$HOME/.claude/hooks/rtk-rewrite.sh"
           }
         ]
       },
@@ -227,7 +227,7 @@
   "autoMode": {
     "soft_deny": [
       "$defaults",
-      "Bash(rm -rf:*) in /Users/suraj/CultureX/repos/cx-saas-server — irreversible local destruction beyond shipped default coverage for this project's migration/rollback workflows",
+      "Bash(rm -rf:*) in ~/CultureX/repos/cx-saas-server — irreversible local destruction beyond shipped default coverage for this project's migration/rollback workflows",
       "Bash(pnpm dlx sequelize-cli db:migrate:undo:*) in this repo — destructive rollback of production-adjacent database migrations"
     ],
     "environment": [
@@ -251,7 +251,7 @@
       "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
       "### User-specific",
       "**Primary use of Claude Code**: software development (Node.js/TypeScript SaaS backend — cx-saas-server)",
-      "**Trusted repo**: /Users/suraj/CultureX/repos/cx-saas-server (this repo's working directory) and its remotes (origin: cx-suraj/cx-saas-server, upstream: CultureX-art/cx-saas-server, plus teammate fork remotes) — per CLAUDE.md, do not commit directly in this repo (stage only); leave committing to the developer",
+      "**Trusted repo**: ~/CultureX/repos/cx-saas-server (this repo's working directory) and its remotes (origin: cx-suraj/cx-saas-server, upstream: CultureX-art/cx-saas-server, plus teammate fork remotes) — per CLAUDE.md, do not commit directly in this repo (stage only); leave committing to the developer",
       "**Org-specific CLIs**: rtk (83× in this project's transcripts), infisical (secrets/env management), gh (GitHub CLI, seen in shell history), ddev/dev/igbc/gbc (seen frequently in shell history but not corroborated in this project's transcripts — unverified provenance, omitted as org-specific)",
       "**routine under cx-suraj/ prefix**: pushes to origin (cx-suraj/cx-saas-server) are routine; pushes to upstream (CultureX-art/cx-saas-server) or teammate fork remotes are not"
     ]
