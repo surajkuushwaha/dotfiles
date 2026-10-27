@@ -42,6 +42,9 @@ Fresh Mac bootstrap: `./install-macos.sh` (Brewfile, Oh My Zsh, stow, tmux plugi
 | `spicetify/` | `~/.config/spicetify/config-xpui.ini`, themes | `CustomApps/` not tracked |
 | `claude/` | `~/.claude/settings.json`, `statusline-command.sh` | Uses `dot-` prefix, stowed separately |
 | `wezterm/` | `~/.config/wezterm/wezterm.lua` | |
+| `aerospace/` | `~/.config/aerospace/aerospace.toml` | Triggers `aerospace_workspace_change` for SketchyBar |
+| `borders/` | `~/.config/borders/bordersrc` | |
+| `sketchybar/` | `~/.config/sketchybar/` | Lua (SbarLua) config from Efterklang/sketchybar; deps in `sketchybar/README.md`, user settings in `settings.lua` |
 | `glazewm/` | `~/.config/glazewm/config.yaml` | Windows |
 | `yasb/` | `~/.config/yasb/` | Windows |
 | `automation/` | Not stowed — run from the repo | `lib/` shared helpers, `personal/` (`sk`), `culturex/` (`cx`) |

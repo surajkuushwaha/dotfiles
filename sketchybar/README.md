@@ -1,69 +1,123 @@
-# 🪄 SketchyBar
+# SketchyBar
 
- 
+Lua config based on **[Efterklang/sketchybar](https://github.com/Efterklang/sketchybar)**
+(imported at commit `545bd0c`). Runs on [SbarLua](https://github.com/FelixKratz/SbarLua),
+not shell plugins. Upstream Q&A lives in [`docs.md`](docs.md).
 
- 
- 
+Local changes from upstream:
 
-_A customizable replacement for the macOS status bar_
+| File | Change |
+|------|--------|
+| `settings.lua` | `WINDOW_MANAGER = "aerospace"`, `chat` (QQ/WeChat) disabled, `SPACES.ID_STYLE = nil` (numbers, not Greek letters) |
+| `helpers/init.lua` | SbarLua path uses `$HOME` instead of `/Users/$USER` |
+| `helpers/.gitignore` | Ignores generated `spaces_util/icon_map.lua` |
+| `items/spaces/window_managers/aerospace.lua` | Registers `aerospace_workspace_change` event (upstream never did, so focus highlight never moved); click switches by workspace name |
+| `helpers/spaces_util/sbar_util.lua` | `add_space_item(..., "item")` creates plain items for AeroSpace, so native Mission Control space changes don't reset the highlight |
 
- 
+## Install on a new Mac
 
-## 📸 Preview
+`./install-macos.sh` at the repo root does all of this. Manual steps:
 
-![Tmux](../docs/images/sketchybar.png)
-
-## 🚀 Installation
-
-**Install SketchyBar**
-
-```bash
-brew install felixkratz/formulae/sketchybar
-```
-
-**Install jq**
+### 1. Packages (all in the root `Brewfile`)
 
 ```bash
-brew install jq
+brew tap felixkratz/formulae
+brew tap joncrangle/tap
+brew install sketchybar lua jq switchaudio-osx media-control imagemagick
+brew install joncrangle/tap/sketchybar-system-stats
+brew install --cask font-sketchybar-app-font font-recursive-mono-nerd-font
 ```
 
-## 🔤 Font Setup
+| Package | Used by |
+|---------|---------|
+| `sketchybar` | The bar itself |
+| `lua` | Runs `sketchybarrc` |
+| `jq` | Music artwork parsing |
+| `switchaudio-osx` | Volume popup: output device picker |
+| `media-control` | Music item: now playing, play/pause, next/prev |
+| `imagemagick` | Music item: album art resize |
+| `sketchybar-system-stats` | CPU, memory, netspeed graphs (`stats_provider` binary) |
+| `font-sketchybar-app-font` | App icons in spaces |
+| `font-recursive-mono-nerd-font` | Icon and label font (`RecMonoCasual Nerd Font`) |
 
-**Install SF Pro Font**
+If `font-sketchybar-app-font` fails with "already a Font", delete the old manual copy first:
+`rm ~/Library/Fonts/sketchybar-app-font.ttf`.
+
+### 2. SbarLua (not in Homebrew)
+
+Installs `sketchybar.so` to `~/.local/share/sketchybar_lua/`:
 
 ```bash
-brew install font-sf-pro
+git clone --depth 1 https://github.com/FelixKratz/SbarLua.git /tmp/sbarlua
+(cd /tmp/sbarlua && make install)
 ```
 
-**Install SF Symbols**
+### 3. App icon map (optional, gitignored)
+
+Gives space icons for every app the font knows. Without it, only the built-in list in
+`helpers/spaces_util/app_icons.lua` is used. Version must match the installed font:
 
 ```bash
-brew install --cask sf-symbols
+v=$(brew list --cask --versions font-sketchybar-app-font | awk '{print $2}')
+curl -fsSL "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v$v/icon_map.lua" \
+  -o ~/Personal/dotfiles/sketchybar/helpers/spaces_util/icon_map.lua
 ```
 
-**Install SketchyBar App Font**
+### 4. Link and start
 
 ```bash
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.40/sketchybar-app-font.ttf -o $HOME/Library/Fonts/sketchybar-app-font.ttf
+cd ~/Personal/dotfiles && stow .        # ~/.config/sketchybar -> dotfiles/sketchybar
+brew services restart sketchybar
 ```
 
-**Add icon_map.sh file**
+### 5. macOS settings
+
+- **System Settings → Control Center → Automatically hide and show the menu bar: Always**,
+  so the native menu bar does not overlap the bar.
+- **Privacy & Security → Accessibility**: allow `sketchybar` (front app menus, `helpers/menus`).
+- Xcode Command Line Tools: `helpers/menus/menus.c` is compiled with `clang` on first launch
+  into `helpers/menus/bin/` (gitignored).
+
+## AeroSpace integration
+
+Lives in `../aerospace/aerospace.toml` (unchanged by this package):
+
+- `exec-on-workspace-change` triggers `aerospace_workspace_change` with `FOCUSED_WORKSPACE`.
+  `items/spaces/window_managers/aerospace.lua` subscribes to it for the highlight.
+- Space app icons refresh every 5 s from `aerospace list-windows`.
+- Workspaces are read once at startup (`aerospace list-workspaces --all`). Reload after
+  adding a workspace.
+
+To use native macOS spaces instead, set `WINDOW_MANAGER = "macos_native"` in `settings.lua`.
+
+## Customize
+
+Everything user-facing is in **`settings.lua`**:
+
+| Setting | Values |
+|---------|--------|
+| `THEME` | `catppuccin_mocha` (default), `catppuccin_latte`, `rose_pine`, `tokyo_night`, `nord_light` |
+| `PRESET` | `gnix` (floating, rounded) or `compact` (flush, like native bar) |
+| `MODULES.<name>.enable` | Toggle each item |
+| `FONT` | Icon and label font family |
+| `WIFI.PROXY_APP` | App name shown and opened from the wifi popup VPN row |
+
+Themes live in `themes/`, items in `items/<name>/`, icons in `icons.lua`.
+
+## Debug
 
 ```bash
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.40/icon_map.sh -o $HOME/.config/sketchybar/icon_map.sh
+sketchybar --reload                       # apply changes
+brew services stop sketchybar && sketchybar   # run in foreground, see errors
+tail -f ~/.cache/sketchybar/sbar.log      # LOG:info output
 ```
 
-## ⚙️ Configuration
+`module 'sketchybar' not found` means SbarLua is missing (step 2).
 
-The configuration files are organized as follows:
+## Update from upstream
 
-- `sketchybarrc` - Main configuration file
-- `colors.sh` - Color definitions
-- `items/` - Individual component configurations
-- `plugins/` - Interactive plugin scripts
-
-## 🔗 Useful Links
-
-- [Official SketchyBar Repository](https://github.com/FelixKratz/SketchyBar)
-- [SketchyBar Wiki](https://github.com/FelixKratz/SketchyBar/wiki)
-- [SketchyBar Examples](https://github.com/FelixKratz/SketchyBar/discussions/47)
+```bash
+git clone --depth 1 https://github.com/Efterklang/sketchybar /tmp/efk
+rsync -a --exclude .git --exclude readme.md --exclude install.sh /tmp/efk/ ~/Personal/dotfiles/sketchybar/
+git -C ~/Personal/dotfiles diff sketchybar   # re-apply the local changes listed above
+```

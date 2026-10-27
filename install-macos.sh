@@ -95,14 +95,20 @@ for plist in "$DOTFILES"/macos/*.plist; do
   defaults import "$domain" "$plist"
 done
 
-step "SketchyBar app font"
-# icon_map.sh is gitignored and must match the font release, so both come from the same tag.
-SKETCHYBAR_FONT_VERSION="v2.0.40"
-font_url="https://github.com/kvndrsslr/sketchybar-app-font/releases/download/$SKETCHYBAR_FONT_VERSION"
-[[ -f "$HOME/Library/Fonts/sketchybar-app-font.ttf" ]] ||
-  curl -fsSL "$font_url/sketchybar-app-font.ttf" -o "$HOME/Library/Fonts/sketchybar-app-font.ttf"
-[[ -f "$DOTFILES/sketchybar/icon_map.sh" ]] ||
-  curl -fsSL "$font_url/icon_map.sh" -o "$DOTFILES/sketchybar/icon_map.sh"
+step "SketchyBar (SbarLua + app icon map)"
+# SbarLua is the Lua module the config runs on; it has no brew formula.
+if [[ ! -f "$HOME/.local/share/sketchybar_lua/sketchybar.so" ]]; then
+  sbarlua_dir="$(mktemp -d)"
+  git clone --depth 1 --quiet https://github.com/FelixKratz/SbarLua.git "$sbarlua_dir"
+  (cd "$sbarlua_dir" && make install)
+fi
+# icon_map.lua is gitignored and must match the installed font-sketchybar-app-font version.
+icon_map="$DOTFILES/sketchybar/helpers/spaces_util/icon_map.lua"
+if [[ ! -f "$icon_map" ]]; then
+  font_version="$(brew list --cask --versions font-sketchybar-app-font | awk '{print $2}')"
+  curl -fsSL "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v$font_version/icon_map.lua" -o "$icon_map" ||
+    echo "Could not fetch icon_map.lua; space app icons fall back to the built-in list."
+fi
 
 step "Services"
 brew services start sketchybar || true

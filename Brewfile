@@ -1,11 +1,20 @@
 tap "anomalyco/tap"
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae"
 tap "infisical/get-cli"
+tap "joncrangle/tap"
 tap "manaflow-ai/cmux"
 tap "mongodb/brew"
 tap "nikitabobko/tap"
 tap "oven-sh/bun"
 tap "pear-devs/pear", trusted: { casks: ["pear-desktop"] }
+# Image manipulation (sketchybar album art)
+brew "imagemagick"
+# Powerful, lightweight programming language (sketchybar config runtime)
+brew "lua"
+# Now-playing info and media keys from the CLI (sketchybar music)
+brew "media-control"
+# Switch audio input/output devices from the CLI (sketchybar volume)
+brew "switchaudio-osx"
 # Improved shell history for zsh, bash, fish and nushell
 brew "atuin", restart_service: :changed
 # Bourne-Again SHell, a UNIX command interpreter
@@ -100,6 +109,8 @@ brew "infisical/get-cli/infisical", trusted: true
 brew "felixkratz/formulae/borders", trusted: true
 # Custom macOS statusbar with shell plugin, interaction and graph support
 brew "felixkratz/formulae/sketchybar", trusted: true
+# CPU, memory and network stats provider for sketchybar
+brew "joncrangle/tap/sketchybar-system-stats", trusted: true
 # Standard utilities for interacting with MongoDB
 brew "mongodb/brew/mongodb-database-tools", trusted: true
 cask "nikitabobko/tap/aerospace", trusted: true
@@ -125,7 +136,9 @@ cask "docker-desktop"
 cask "eqmac"
 cask "font-hack-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
+cask "font-recursive-mono-nerd-font"
 cask "font-sf-pro"
+cask "font-sketchybar-app-font"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration

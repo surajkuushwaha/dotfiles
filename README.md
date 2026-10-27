@@ -1,145 +1,123 @@
 # dotfiles
 
-## Quick Start (macOS)
+macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Every package is
+a plain folder that gets symlinked into `~/.config/` (or `~/` for a few). Edit files here; the
+symlinks make the change live.
+
+Theme everywhere: Catppuccin Mocha.
+
+## New Mac
 
 ```bash
-git clone <repository-url> ~/Personal/dotfiles
+git clone https://github.com/surajkuushwaha/dotfiles.git ~/Personal/dotfiles
 ~/Personal/dotfiles/install-macos.sh
 ```
 
-Installs Homebrew and everything in `Brewfile`, Oh My Zsh with Powerlevel10k and plugins, stows all packages, then sets up tmux plugins, gh-dash and spicetify. Safe to re-run.
+The script is safe to re-run. It installs, in order:
 
-## Installation (manual)
+1. Xcode Command Line Tools and Homebrew
+2. Everything in `Brewfile`
+3. Oh My Zsh, Powerlevel10k, zsh plugins
+4. Stow links for all packages
+5. tmux plugins, gh-dash, Spicetify
+6. App settings from `macos/*.plist`
+7. SketchyBar extras: SbarLua and the app icon map
+8. Starts the `sketchybar` and `borders` services
 
-### Prerequisites
+Then do the manual steps in [After install](#after-install).
 
-1. Install GNU Stow:
-   ```bash
-   # On macOS
-   brew install stow
+## Packages
 
-   # On Ubuntu/Debian
-   sudo apt install stow
-   ```
+| Package | Linked to | Notes |
+|---------|-----------|-------|
+| `aerospace/` | `~/.config/aerospace/` | Tiling WM; triggers SketchyBar workspace events |
+| `atuin/` | `~/.config/atuin/` | Shell history |
+| `borders/` | `~/.config/borders/` | Window borders (JankyBorders) |
+| `claude/` | `~/.claude/` | Stowed separately (see below) |
+| `gh/`, `gh-dash/` | `~/.config/gh/`, `~/.config/gh-dash/` | `gh/hosts.yml` not tracked |
+| `ghostty/` | `~/.config/ghostty/` | Terminal |
+| `git/` | `~/.config/git/` | Global gitignore |
+| `nvim/` | `~/.config/nvim/` | |
+| `opencode/` | `~/.config/opencode/` | |
+| `sketchybar/` | `~/.config/sketchybar/` | Lua bar, see [`sketchybar/README.md`](sketchybar/README.md) |
+| `spicetify/` | `~/.config/spicetify/` | Spotify theming |
+| `tmux/` | `~/.config/tmux/` | |
+| `wezterm/`, `zellij/` | `~/.config/…` | |
+| `zed/` | `~/.config/zed/` | |
+| `zsh/` | `~/.config/zsh/` | `ZDOTDIR` set by `zshenv/` |
+| `zshenv/` | `~/.zshenv` | Stowed separately |
+| `glazewm/`, `yasb/` | `~/.config/…` | Windows only |
 
-2. Clone this repository:
-   ```bash
-   git clone <repository-url> ~/Personal/dotfiles
-   cd ~/Personal/dotfiles
-   ```
+Not stowed: `automation/` (scripts run from the repo), `macos/` (plist exports),
+`Brewfile`, `install-macos.sh`, docs.
 
-### Zsh Dependencies
+## Everyday commands
 
-Install the following dependencies for the zsh configuration:
-
-1. **Oh My Zsh**:
-   ```bash
-   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-   ```
-
-2. **Powerlevel10k Theme**:
-   ```bash
-   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-   ```
-
-3. **Zsh Plugins**:
-   ```bash
-   # zsh-syntax-highlighting
-   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-   # zsh-autosuggestions
-   git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-   ```
-
-4. **FZF (Fuzzy Finder)**:
-   ```bash
-   # On macOS
-   brew install fzf
-   $(brew --prefix)/opt/fzf/install
-
-   # On Ubuntu/Debian
-   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-   ~/.fzf/install
-   ```
-
-5. **Additional Tools**:
-   ```bash
-   # eza (modern ls replacement)
-   # On macOS
-   brew install eza
-
-   # On Ubuntu/Debian
-   sudo apt install -y gpg
-   sudo mkdir -p /etc/apt/keyrings
-   wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-   echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-   sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
-   sudo apt update
-   sudo apt install -y eza
-
-   # batcat (cat with syntax highlighting) - for fzf preview
-   # On macOS
-   brew install bat
-
-   # On Ubuntu/Debian
-   sudo apt install bat
-   # Note: On Ubuntu/Debian, the command is 'batcat' instead of 'bat'
-   ```
-
-6. **Optional: Node Version Managers** (if needed):
-   ```bash
-   # fnm (Fast Node Manager) - for macOS
-   brew install fnm
-
-   # bun
-   curl -fsSL https://bun.sh/install | bash
-
-   # pnpm
-   curl -fsSL https://get.pnpm.io/install.sh | sh -
-   ```
-
-### Setting up dotfiles with Stow
-
-1. **Important**: If you have Oh My Zsh installed, it creates its own `.zshrc` file. Back it up first:
-   ```bash
-   mv ~/.zshrc ~/.zshrc.backup
-   ```
-
-2. Deploy dotfiles using stow. The `.stowrc` file configures `stow .` to target `~/.config/`:
-   ```bash
-   # Deploy all XDG packages to ~/.config/
-   stow .
-
-   # Deploy home-root packages (zshenv, claude) — must use -d to bypass .stowrc
-   stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude
-   ```
-
-### Troubleshooting
-
-#### Issue: `stow .` conflicts with existing config files
-
-If a config file already exists (not a symlink), use `--adopt`:
 ```bash
-stow --adopt .
+cd ~/Personal/dotfiles
+
+stow .                                         # link all ~/.config packages
+stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude   # link ~/ packages
+stow -R .                                      # relink after adding/removing files
+stow -D .                                      # remove all links
+
+brew bundle --file=Brewfile                    # install anything missing
+brew bundle dump --force --describe --file=Brewfile   # save currently installed apps
+
+sketchybar --reload                            # after editing sketchybar/
+aerospace reload-config                        # after editing aerospace/
 ```
-This moves existing files into the dotfiles repo and replaces them with symlinks.
 
-#### Issue: zshenv/claude packages not deploying
+### Add a new app config
 
-These packages are ignored by `.stowrc`. Deploy them separately with `-d` flag to bypass `.stowrc`:
+1. Move the folder in: `mv ~/.config/foo ~/Personal/dotfiles/foo`
+2. Link it: `stow .`
+3. Add it to the [Packages](#packages) table, and to `Brewfile` if it needs installing.
+
+### Save macOS app settings
+
 ```bash
-stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude
+defaults export <domain> macos/<domain>.plist
 ```
 
-## GNU Stow Naming Convention
+Strip machine-specific keys (window sizes, timestamps, bookmarks, notes) before committing.
+`install-macos.sh` imports every file in `macos/`.
 
-`.stowrc` targets `~/.config/`. Each package dir maps to `~/.config/<package>/`:
+## After install
+
+- **SketchyBar**: System Settings → Control Center → *Automatically hide and show the menu
+  bar* → **Always**. Allow `sketchybar` in Privacy & Security → Accessibility.
+  Full dependency list: [`sketchybar/README.md`](sketchybar/README.md).
+- **AeroSpace**: allow it in Privacy & Security → Accessibility, then launch it once.
+- `gh auth login` (writes the untracked `gh/hosts.yml`).
+- Open a new terminal to load the zsh config.
+
+## Troubleshooting
+
+**`stow .` reports a conflict.** A real file sits where a link should go. Either delete it, or
+pull it into the repo with `stow --adopt .` and review `git diff`.
+
+**`zshenv` / `claude` not linked.** `.stowrc` ignores them on purpose. Use the `-d … -t ~`
+command above.
+
+**Oh My Zsh created `~/.zshrc`.** Remove it; the real config is `~/.config/zsh/.zshrc` via
+`ZDOTDIR`.
+
+**SketchyBar blank or missing.** Run it in the foreground to see errors:
+`brew services stop sketchybar && sketchybar`.
+
+## How Stow is set up
+
+`.stowrc` makes `stow .` target `~/.config/` and ignores the non-config files. Each top-level
+folder becomes `~/.config/<folder>`:
 
 ```
-~/.config/ghostty/config  → ghostty/config
-~/.config/zellij/config.kdl → zellij/config.kdl
-~/.config/tmux/tmux.conf  → tmux/tmux.conf
-~/.config/zsh/.zshrc      → zsh/.zshrc (via ZDOTDIR)
-~/.zshenv                 → zshenv/dot-zshenv (dot- prefix convention)
-~/.claude/settings.json   → claude/dot-claude/settings.json
+~/.config/ghostty/config        → ghostty/config
+~/.config/sketchybar/           → sketchybar/        (whole folder linked)
+~/.config/zsh/.zshrc            → zsh/.zshrc
+~/.zshenv                       → zshenv/dot-zshenv  (dot- prefix, --dotfiles)
+~/.claude/settings.json         → claude/dot-claude/settings.json
 ```
+
+Linux note: the zsh setup also works on Ubuntu (`sudo apt install stow zsh fzf bat eza`;
+`bat` is called `batcat` there).
