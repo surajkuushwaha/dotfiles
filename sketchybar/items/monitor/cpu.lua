@@ -7,7 +7,7 @@ local cpu = SBAR.add("graph", "widgets.cpu", 42, {
     border_color = { alpha = 0 },
     drawing = true,
   },
-  icon = { string = ICONS.cpu, color = COLORS.yellow },
+  icon = { string = ICONS.cpu, color = COLORS.text },
   label = {
     string = "CPU ??%",
     font = { size = 9.0 },
@@ -16,7 +16,8 @@ local cpu = SBAR.add("graph", "widgets.cpu", 42, {
     width = 0,
     y_offset = 4,
   },
-  padding_right = PADDINGS + 10,
+  padding_left = RIGHT_GAP - PADDINGS,
+  padding_right = PADDINGS,
 })
 
 cpu:subscribe({ "system_stats" }, function(env)

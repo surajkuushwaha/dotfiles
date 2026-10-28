@@ -46,7 +46,7 @@ SBAR.default({
   background = {
     height = 28,
     corner_radius = 9,
-    border_width = 2,
+    border_width = 0, -- minimal: no per-item borders or bracket borders
     border_color = COLORS.surface1,
     image = { corner_radius = 9, border_color = COLORS.grey, border_width = 1 },
   },

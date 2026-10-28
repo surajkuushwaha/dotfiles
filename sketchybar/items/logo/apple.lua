@@ -5,7 +5,7 @@ local apple = SBAR.add("item", {
   icon = {
     font = { size = 22.0 },
     string = ICONS.apple,
-    color = COLORS.lavender,
+    color = COLORS.text,
     padding_right = 8,
     padding_left = 8,
   },

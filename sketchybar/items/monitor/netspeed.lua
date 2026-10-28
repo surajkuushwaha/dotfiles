@@ -9,8 +9,11 @@ local upload_speed = SBAR.add("item", "widgets.upload_speed", {
   },
   label = {
     font = { size = 9.0 },
-    color = COLORS.red,
+    color = COLORS.text,
     string = "??? KB/s",
+    -- fixed width so the right side doesn't shift as the speed text changes
+    width = 50,
+    align = "right",
   },
   y_offset = 4,
 })
@@ -25,8 +28,11 @@ local download_speed = SBAR.add("item", "widgets.download_speed", {
   },
   label = {
     font = { size = 9.0 },
-    color = COLORS.blue,
+    color = COLORS.text,
     string = "??? KB/s",
+    -- fixed width so the right side doesn't shift as the speed text changes
+    width = 50,
+    align = "right",
   },
   y_offset = -4,
 })
@@ -43,8 +49,8 @@ local function format_speed(speed_str)
 end
 
 upload_speed:subscribe("system_stats", function(env)
-  local up_color = (env.NETWORK_TX_en0 == "0") and COLORS.grey or COLORS.red
-  local down_color = (env.NETWORK_RX_en0 == "0") and COLORS.grey or COLORS.blue
+  local up_color = COLORS.text
+  local down_color = COLORS.text
 
   local tx = format_speed(env.NETWORK_TX_en0)
   local rx = format_speed(env.NETWORK_RX_en0)

@@ -4,8 +4,9 @@ SBAR.add("item", { position = "right", width = PADDINGS + 6 })
 -- time only; the date line was removed
 local cal_time = SBAR.add("item", {
   position = "right",
+  padding_left = RIGHT_GAP - PADDINGS,
   label = {
-    color = COLORS.lavender,
+    color = COLORS.text,
     font = {
       size = 13.0,
     },
@@ -16,9 +17,6 @@ local cal_time = SBAR.add("item", {
 local cal_bracket = SBAR.add("bracket", { cal_time.name }, {
   update_freq = 1,
 })
-
--- Padding item required because of bracket
-SBAR.add("item", { position = "right", width = PADDINGS })
 
 cal_bracket:subscribe({ "forced", "routine", "system_woke" }, function(env)
   cal_time:set({ label = { string = os.date("%H:%M:%S %p") } })

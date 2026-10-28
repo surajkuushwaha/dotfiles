@@ -7,7 +7,7 @@ local ram = SBAR.add("graph", "widgets.ram", 42, {
     border_color = { alpha = 0 },
     drawing = true,
   },
-  icon = { string = ICONS.ram, color = COLORS.red },
+  icon = { string = ICONS.ram, color = COLORS.text },
   label = {
     string = "RAM ??%",
     font = { size = 9.0 },
@@ -18,6 +18,7 @@ local ram = SBAR.add("graph", "widgets.ram", 42, {
   },
   update_freq = 3,
   updates = "when_shown",
+  padding_left = RIGHT_GAP - PADDINGS,
   padding_right = PADDINGS,
 })
 

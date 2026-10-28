@@ -1,7 +1,7 @@
 --- @type "macos_native" | "aerospace"
 WINDOW_MANAGER = "aerospace"
 --- @type "gnix" | "compact"
-PRESET = "gnix"
+PRESET = "compact"
 --- @type "catppuccin_mocha" | "catppuccin_latte" | "rose_pine" | "tokyo_night" | "nord_light"
 THEME = "catppuccin_mocha"
 
@@ -58,7 +58,7 @@ MODULES = {
 SPACES = {
   --- @type "greek_uppercase" | "greek_lowercase" | nil
   ID_STYLE = nil, -- show the AeroSpace workspace name (0-9)
-  ITEM_PADDING = 12,
+  ITEM_PADDING = 4,
 }
 
 MUSIC = {
@@ -76,3 +76,5 @@ WIFI = { PROXY_APP = "FlClash" }
 
 PADDINGS = 3
 GROUP_PADDINGS = 5
+-- gap between right-side groups (netspeed, RAM, CPU, clock)
+RIGHT_GAP = 16

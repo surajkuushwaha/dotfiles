@@ -15,7 +15,7 @@ local spaces_indicator = SBAR.add("item", {
   icon = {
     padding_left = 8,
     padding_right = 9,
-    color = COLORS.grey,
+    color = COLORS.text,
     string = ICONS.switch.on,
   },
   label = {

@@ -280,5 +280,6 @@
       "**Org-specific CLIs**: rtk (83× in this project's transcripts), infisical (secrets/env management), gh (GitHub CLI, seen in shell history), ddev/dev/igbc/gbc (seen frequently in shell history but not corroborated in this project's transcripts — unverified provenance, omitted as org-specific)",
       "**routine under cx-suraj/ prefix**: pushes to origin (cx-suraj/cx-saas-server) are routine; pushes to upstream (CultureX-art/cx-saas-server) or teammate fork remotes are not"
     ]
-  }
+  },
+  "model": "sonnet"
 }

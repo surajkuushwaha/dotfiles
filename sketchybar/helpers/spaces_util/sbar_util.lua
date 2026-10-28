@@ -28,22 +28,23 @@ function space_api:add_space_item(space_id, idx, item_type)
     icon = {
       string = space_label,
       padding_left = SPACES.ITEM_PADDING,
-      padding_right = 8,
+      padding_right = 6,
       color = COLORS.text,
-      highlight_color = COLORS.mauve,
+      highlight_color = COLORS.lavender,
     },
     label = {
       padding_right = SPACES.ITEM_PADDING,
-      color = COLORS.subtext0,
+      color = COLORS.text,
       highlight_color = COLORS.lavender,
       font = "sketchybar-app-font:Regular:13.0",
       y_offset = 0,
     },
-    padding_right = GROUP_PADDINGS,
-    padding_left = 1,
+    -- 8px gap between workspaces
+    padding_right = 4,
+    padding_left = 4,
     background = {
       color = COLORS.base,
-      border_width = 2,
+      border_width = 0,
       height = 26,
       border_color = COLORS.mantle,
     },
@@ -59,7 +60,8 @@ function space_api:highlight_focused_space(space_item, is_selected)
   space_item:set({
     icon = { highlight = is_selected },
     label = { highlight = is_selected },
-    background = { border_color = is_selected and COLORS.lavender or COLORS.surface1 },
+    -- border only on the focused space
+    background = { border_width = is_selected and 2 or 0, border_color = COLORS.lavender },
   })
 end
 
