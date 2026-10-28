@@ -1,7 +1,7 @@
 local icons = {
   plus = "􀅼",
   loading = "􀖇",
-  apple = "󰀶", -- 󰀶  ❁
+  apple = "", -- nf-dev-apple
   gear = "􀍟",
   cpu = "􀫥",
   ram = " ",

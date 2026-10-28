@@ -1,6 +1,7 @@
 local helpers_path = os.getenv("HOME") .. "/.config/sketchybar/helpers/"
 
 local front_app = SBAR.add("item", "front_app", {
+  position = "center",
   display = "active",
   icon = { drawing = false },
   updates = true,

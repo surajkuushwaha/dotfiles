@@ -43,16 +43,16 @@ MODULES = {
   spaces = { enable = true },
   front_app = { enable = true },
   calendar = { enable = true },
-  battery = { enable = true, style = "icon" },
-  wifi = { enable = true },
-  volume = { enable = true },
+  battery = { enable = false, style = "icon" },
+  wifi = { enable = false },
+  volume = { enable = false },
   chat = { enable = false }, -- QQ / WeChat indicators
-  brew = { enable = true },
-  toggle_stats = { enable = true },
+  brew = { enable = false },
+  toggle_stats = { enable = false },
   netspeed = { enable = true },
   cpu = { enable = true },
   mem = { enable = true },
-  music = { enable = true },
+  music = { enable = false },
 }
 
 SPACES = {

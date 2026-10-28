@@ -77,11 +77,13 @@ SBAR.default({
   scroll_texts = true,
 })
 
+require("items")
+
+-- started after items: this never-ending exec forks the config, and an earlier fork made the
+-- blocking io.popen calls in items/spaces/window_managers/aerospace.lua hang in pclose
 SBAR.exec("killall stats_provider >/dev/null; stats_provider --cpu usage --memory ram_usage --network en0 --interval 1 --no-units", function()
   LOG:info("Started stats_provider_rust")
 end)
-
-require("items")
 
 SBAR.end_config()
 SBAR.event_loop()

@@ -11,6 +11,10 @@ Local changes from upstream:
 | `settings.lua` | `WINDOW_MANAGER = "aerospace"`, `chat` (QQ/WeChat) disabled, `SPACES.ID_STYLE = nil` (numbers, not Greek letters) |
 | `helpers/init.lua` | SbarLua path uses `$HOME` instead of `/Users/$USER` |
 | `helpers/.gitignore` | Ignores generated `spaces_util/icon_map.lua` |
+| `init.lua` | `stats_provider` exec moved after `require("items")`; before, startup often hung in `pclose` with an empty bar |
+| `items/front_app/front_app.lua` | App name in the bar center |
+| `items/calendar/calendar.lua` | Time only, date line removed |
+| `settings.lua` modules | Right side trimmed to netspeed, RAM, CPU, time |
 | `items/spaces/window_managers/aerospace.lua` | Registers `aerospace_workspace_change` event (upstream never did, so focus highlight never moved); click switches by workspace name |
 | `helpers/spaces_util/sbar_util.lua` | `add_space_item(..., "item")` creates plain items for AeroSpace, so native Mission Control space changes don't reset the highlight |
 
