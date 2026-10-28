@@ -24,6 +24,7 @@ local items = {
   { "cpu", "monitor.cpu" },
   { "mem", "monitor.mem" },
   { "netspeed", "monitor.netspeed" },
+  { "docker", "docker.docker" },
   { "music", "music.music" },
 }
 

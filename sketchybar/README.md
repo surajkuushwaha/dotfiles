@@ -16,6 +16,7 @@ Local changes from upstream:
 | `items/calendar/calendar.lua` | Time only, date line removed |
 | `settings.lua` modules | Right side trimmed to netspeed, RAM, CPU, time |
 | Minimal style | `PRESET = "compact"`, no item/bracket borders, one text color, lavender border + accent only on the focused workspace |
+| `items/docker/docker.lua` (new) | Running container count every 10 s via `docker info`; dimmed icon, no count when Docker is down; click opens Docker Desktop (`docker-desktop` cask) |
 | Right spacing | `RIGHT_GAP = 16` in `settings.lua` between netspeed, RAM, CPU, clock; netspeed label fixed at width 50 |
 | `items/spaces/window_managers/aerospace.lua` | Registers `aerospace_workspace_change` event (upstream never did, so focus highlight never moved); click switches by workspace name |
 | `helpers/spaces_util/sbar_util.lua` | `add_space_item(..., "item")` creates plain items for AeroSpace, so native Mission Control space changes don't reset the highlight |

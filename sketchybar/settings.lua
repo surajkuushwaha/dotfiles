@@ -50,6 +50,7 @@ MODULES = {
   brew = { enable = false },
   toggle_stats = { enable = false },
   netspeed = { enable = true },
+  docker = { enable = true },
   cpu = { enable = true },
   mem = { enable = true },
   music = { enable = false },

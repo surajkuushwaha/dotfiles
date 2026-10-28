@@ -3,6 +3,7 @@ local icons = {
   loading = "􀖇",
   apple = "", -- nf-dev-apple
   gear = "􀍟",
+  docker = "󰡨", -- nf-md-docker
   cpu = "􀫥",
   ram = " ",
   clipboard = "􀉄",
