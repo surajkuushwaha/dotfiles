@@ -45,7 +45,7 @@ function space_api:add_space_item(space_id, idx, item_type)
     background = {
       color = COLORS.base,
       border_width = 0,
-      height = 26,
+      height = 22, -- fits inside the 30 high floating bar
       border_color = COLORS.mantle,
     },
   })

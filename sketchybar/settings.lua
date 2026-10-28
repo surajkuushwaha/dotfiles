@@ -19,10 +19,11 @@ PRESET_OPTIONS = {
   },
   compact = {
     BORDER_WIDTH = 0,
-    HEIGHT = 27,
-    Y_OFFSET = 0,
-    MARGIN = 0,
-    CORNER_RADIUS = 0,
+    -- floating; gaps match aerospace (5). Y_OFFSET + HEIGHT + 5 = aerospace gaps.outer.top (40) on the main monitor
+    HEIGHT = 30,
+    Y_OFFSET = 5,
+    MARGIN = 5,
+    CORNER_RADIUS = 10,
   },
 }
 

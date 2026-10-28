@@ -87,7 +87,10 @@ brew services restart sketchybar
 
 ## AeroSpace integration
 
-Lives in `../aerospace/aerospace.toml` (unchanged by this package):
+Lives in `../aerospace/aerospace.toml`:
+
+- `gaps.outer.top = 40` on the main monitor = bar `Y_OFFSET` 5 + `HEIGHT` 30 + 5px gap. Change
+  them together; the bar's `MARGIN` 5 matches the AeroSpace outer gaps.
 
 - `exec-on-workspace-change` triggers `aerospace_workspace_change` with `FOCUSED_WORKSPACE`.
   `items/spaces/window_managers/aerospace.lua` subscribes to it for the highlight.
