@@ -11,6 +11,7 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -204,9 +205,7 @@
     "superpowers@claude-plugins-official": true,
     "caveman@caveman": true,
     "claude-code-wakatime@wakatime": true,
-    "vercel@claude-plugins-official": false,
     "frontend-design@claude-plugins-official": false,
-    "daily.dev@daily.dev": true,
     "whiteboard@devfast": true,
     "postman@claude-plugins-official": true
   },
@@ -243,11 +242,14 @@
     }
   },
   "effortLevel": "high",
+  "promptSuggestionEnabled": false,
+  "awaySummaryEnabled": false,
   "tui": "fullscreen",
+  "timeFormat": "12-hour",
   "skipDangerousModePermissionPrompt": true,
   "theme": "custom:catpuchine",
   "switchModelsOnFlag": true,
-  "autoScrollEnabled": false,
+  "autoScrollEnabled": true,
   "skipAutoPermissionPrompt": true,
   "autoMode": {
     "soft_deny": [
@@ -281,5 +283,5 @@
       "**routine under cx-suraj/ prefix**: pushes to origin (cx-suraj/cx-saas-server) are routine; pushes to upstream (CultureX-art/cx-saas-server) or teammate fork remotes are not"
     ]
   },
-  "model": "sonnet"
+  "feedbackDrafts": "off"
 }
