@@ -19,7 +19,7 @@ local cal_bracket = SBAR.add("bracket", { cal_time.name }, {
 })
 
 cal_bracket:subscribe({ "forced", "routine", "system_woke" }, function(env)
-  cal_time:set({ label = { string = os.date("%H:%M:%S %p") } })
+  cal_time:set({ label = { string = os.date("%I:%M:%S %p") } })
 end)
 
 local function click_event()
