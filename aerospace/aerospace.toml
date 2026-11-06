@@ -113,8 +113,9 @@ inner.horizontal = [{ monitor.main = 5 }, 0]
 outer.left =       [{ monitor.main = 5 }, 0]
 outer.right =      [{ monitor.main = 5 }, 0]
 outer.bottom =     [{ monitor.main = 5 }, 0]
-# sketchybar: y_offset 5 + height 30 + 5 gap
-outer.top =        [{ monitor.main = 40 }, 0]
+# sketchybar: y_offset 5 + height 30 + 5 gap = 40 from the screen top.
+# The notched built-in display already reserves a 32pt menu bar in aerospace's work area, so only 40 - 32 = 8 is needed there.
+outer.top =        [{ monitor.built-in = 8 }, { monitor.main = 40 }, 0]
 
 
 # 'main' binding mode declaration
