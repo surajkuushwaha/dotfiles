@@ -75,6 +75,8 @@ brew "neovim"
 brew "nmap"
 # Create, run, and share large language models (LLMs)
 brew "ollama"
+# Open source infrastructure as code (Terraform fork)
+brew "opentofu"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
 # Search tool like grep and The Silver Searcher

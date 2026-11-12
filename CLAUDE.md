@@ -18,7 +18,7 @@ stow .
 stow --dotfiles -d ~/Personal/dotfiles -t ~ zshenv claude
 ```
 
-Packages ignored by `.stowrc`: automation, zshenv, claude, README.md, CLAUDE.md, Brewfile, install-macos.sh, macos.
+Packages ignored by `.stowrc`: automation, zshenv, claude, README.md, CLAUDE.md, Brewfile, install-macos.sh, macos, infra.
 
 `macos/<domain>.plist`: app settings from `defaults export`, imported by `install-macos.sh`. Strip machine-specific and personal keys (window sizes, timestamps, bookmarks, notes) before committing.
 
@@ -49,6 +49,20 @@ Fresh Mac bootstrap: `./install-macos.sh` (Brewfile, Oh My Zsh, stow, tmux plugi
 | `glazewm/` | `~/.config/glazewm/config.yaml` | Windows |
 | `yasb/` | `~/.config/yasb/` | Windows |
 | `automation/` | Not stowed — run from the repo | `lib/` shared helpers, `personal/` (`sk`), `culturex/` (`cx`) |
+| `infra/` | Not stowed | OpenTofu IaC for cloud dev workspaces: `shared/` (cloud-init), `<cloud>/workspace/` roots. State and `*.tfvars` gitignored |
+
+## Infra Guardrails
+
+`infra/` is in a public repo. Code is public, values are not.
+
+- Commit: `.tf` files, `*.tfvars.example` (placeholders only), `shared/cloud-init.yaml` (no tokens), README/notes, `.terraform.lock.hcl` (pins provider versions).
+- Never commit: `*.tfstate*` (IPs, resource IDs, secrets in plain text), `*.tfvars`, `.terraform/`, service-account JSON keys. `infra/.gitignore` blocks these; never weaken it.
+- No hardcoded project ID, email, IP allowlist, or SSH public key in `.tf` files. Declare a variable; real value goes only in `terraform.tfvars`.
+- Secrets (Tailscale auth keys, API tokens) go through env vars (`TF_VAR_<name>`) or a secret manager, marked `sensitive = true`. Never in cloud-init, `.tf`, or `*.tfvars.example`.
+- Auth via `gcloud auth application-default login`. Do not create or download service-account keys.
+- Run `gitleaks detect` before every commit touching `infra/`. A committed secret stays in git history: rotate it immediately, do not just delete the file.
+- Never run `tofu apply` or `tofu destroy` without showing `tofu plan` output and getting explicit approval.
+- Work (CultureX) infra, remote state, CI, or multiple environments → separate private repo, not `infra/`.
 
 ## Zsh Stack
 

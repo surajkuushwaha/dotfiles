@@ -1,0 +1,50 @@
+#cloud-config
+# Cloud-agnostic first-boot bootstrap for a dev workspace VM.
+# Rendered by OpenTofu templatefile(): substitutes the username and SSH public key.
+# Holds no secrets. Tailscale is installed here but joined by hand after first login.
+
+users:
+  - name: ${username}
+    groups: [sudo]
+    shell: /bin/bash # switched to zsh in runcmd, after zsh is installed
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+
+ssh_pwauth: false
+
+package_update: true
+package_upgrade: true
+packages:
+  - zsh
+  - tmux
+  - git
+  - stow
+  - curl
+  - unzip
+  - build-essential
+  - ripgrep
+  - fd-find
+  - bat
+  - fzf
+  - jq
+  - eza
+  - htop
+
+runcmd:
+  # Ubuntu ships bat as batcat and fd as fdfind
+  - ln -sf /usr/bin/batcat /usr/local/bin/bat
+  - ln -sf /usr/bin/fdfind /usr/local/bin/fd
+  # Neovim: apt version is too old, use the official release tarball
+  - curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz | tar -xz -C /opt
+  - ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+  # GitHub CLI from its apt repo
+  - mkdir -p -m 755 /etc/apt/keyrings
+  - curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
+  - chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list
+  - apt-get update && apt-get install -y gh
+  # Tailscale: installed only; run `sudo tailscale up --ssh` after first login
+  - curl -fsSL https://tailscale.com/install.sh | sh
+  - chsh -s /usr/bin/zsh ${username}
