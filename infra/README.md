@@ -7,7 +7,7 @@ Cloud dev workspaces as code, managed with [OpenTofu](https://opentofu.org/) (op
 ```
 infra/
   shared/            cloud-agnostic pieces (cloud-init bootstrap used by every cloud)
-  gcp/workspace/     GCP dev VM
+  gcp/workspace/     GCP dev VM (setup, connect, `ws` command: see its README.md)
   azure/workspace/   Azure dev VM (later)
 ```
 
