@@ -45,6 +45,12 @@ variable "ssh_public_key_path" {
   type        = string
 }
 
+variable "dotfiles_repo" {
+  description = "SSH URL of the (public) dotfiles repo. Cloned over HTTPS on first boot (the VM has no GitHub key yet), then origin is set to this URL. Empty = skip."
+  type        = string
+  default     = "git@github.com:surajkuushwaha/dotfiles.git"
+}
+
 variable "ssh_identity_agent" {
   description = "Optional SSH agent socket for the generated ssh_config (e.g. Bitwarden's). Empty = default agent."
   type        = string

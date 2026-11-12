@@ -117,6 +117,20 @@ psc() {
        {printf "PID: %-8s CPU: %-10s %%  RAM: %-10.2f MB  PATH: %s\n", $1, $2, $3/1024, $4}'
 }
 
+# GCP workspace VM (infra/gcp/workspace). Project and zone come from the local
+# `workspace` gcloud configuration, so no IDs live in this file.
+ws() {
+  local vm="workspace"
+  local gc=(gcloud --configuration=workspace compute instances)
+  case "$1" in
+    start)  "${gc[@]}" start "$vm" && echo "Started $vm. Connect: ws ssh" ;;
+    stop)   "${gc[@]}" stop "$vm" ;;
+    status) "${gc[@]}" describe "$vm" --format='value(status)' ;;
+    ssh)    ssh "$vm" ;;
+    *)      echo "usage: ws {start|stop|status|ssh}"; return 1 ;;
+  esac
+}
+
 # tmux aliases
 tmuxcopy() {
     local pane
@@ -170,9 +184,10 @@ _fzf_comprun() {
 }
 
 # NODE VERSION MANAGERS
-# fnm
-FNM_PATH="/opt/homebrew/opt/fnm/bin"
-if [ -d "$FNM_PATH" ]; then
+# fnm (Homebrew on macOS; install-linux.sh puts it in ~/.local/share/fnm on Linux)
+FNM_PATH="$HOME/.local/share/fnm"
+[ -d "$FNM_PATH" ] && export PATH="$FNM_PATH:$PATH"
+if command -v fnm >/dev/null 2>&1; then
   eval "`fnm env`"
 fi
 # ---

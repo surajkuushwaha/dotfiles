@@ -2,6 +2,7 @@
 project_id          = "your-project-id"
 ssh_user            = "your-linux-username"
 ssh_public_key_path = "~/.ssh/id_ed25519.pub"
+# dotfiles_repo      = "git@github.com:<you>/dotfiles.git"   # default in variables.tf; "" = skip
 # ssh_identity_agent = "~/.bitwarden-ssh-agent.sock"   # Bitwarden desktop SSH agent
 
 # Optional overrides (defaults in variables.tf)

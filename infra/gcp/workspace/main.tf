@@ -94,6 +94,9 @@ resource "google_compute_instance" "workspace" {
     user-data = templatefile("${path.module}/../../shared/cloud-init.yaml.tftpl", {
       username       = var.ssh_user
       ssh_public_key = trimspace(file(pathexpand(var.ssh_public_key_path)))
+      dotfiles_repo  = var.dotfiles_repo
+      # git@github.com:user/repo.git -> https://github.com/user/repo.git
+      dotfiles_clone_url = replace(var.dotfiles_repo, "/^git@([^:]+):/", "https://$1/")
     })
   }
 
