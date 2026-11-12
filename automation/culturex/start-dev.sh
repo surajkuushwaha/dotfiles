@@ -42,7 +42,10 @@ APPLICATIONS=(
   "VS Code|Visual Studio Code|2"
   # "antigravity|antigravity|2"
   # "cursor|cursor|2"
-  "ghostty|ghostty|3"
+  "orca|orca|6"
+
+  # terminal / agents
+  "Herdr|Herdr|3"
 
   # API Clients
   "Postman|Postman|4"

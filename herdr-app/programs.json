@@ -1,0 +1,12 @@
+{
+  "programs": {
+    "gh-dash": {
+      "name": "GitHub Dash",
+      "icon": "icons/gh.svg",
+      "tint": true,
+      "tile": "#313244",
+      "color": "#cba6f7",
+      "match": ["gh-dash", "dash"]
+    }
+  }
+}

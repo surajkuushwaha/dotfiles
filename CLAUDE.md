@@ -41,6 +41,7 @@ Fresh Mac bootstrap: `./install-macos.sh` (Brewfile, Oh My Zsh, stow, tmux plugi
 | `zed/` | `~/.config/zed/settings.json`, `keymap.json`, themes | `conversations/` and `prompts/` not tracked |
 | `spicetify/` | `~/.config/spicetify/config-xpui.ini`, themes | `CustomApps/` not tracked |
 | `claude/` | `~/.claude/settings.json`, `keybindings.json`, `statusline-*.sh` | Uses `dot-` prefix, stowed separately. `hooks/` (rtk, herdr) and `skills/` (links to `~/.agents/skills`) are tool-managed, not tracked |
+| `herdr-app/` | `~/.config/herdr-app/` | Herdr app: `settings.json`, `keys.json`, `themes/`, own layouts/mods (`mods/cx-features` = cmd-k feature switcher, builds spaces via `automation/culturex/herdr-feature.sh`), `sounds/`. App-managed files (AGENTS.md, `.d.ts`, shipped mods/layouts, state) gitignored |
 | `wezterm/` | `~/.config/wezterm/wezterm.lua` | |
 | `aerospace/` | `~/.config/aerospace/aerospace.toml` | Triggers `aerospace_workspace_change` for SketchyBar |
 | `borders/` | `~/.config/borders/bordersrc` | |

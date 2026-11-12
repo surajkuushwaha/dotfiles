@@ -1,0 +1,14 @@
+{
+  "zoom": 1.0,
+  "sounds": {
+    "enabled": true,
+    "done": "sounds/done.mp3",
+    "blocked": "sounds/blocked.mp3"
+  },
+  "font": "JetBrainsMono Nerd Font",
+  "font_size": 16.0,
+  "font_ligatures": false,
+  "telemetry": false,
+  "minimum_contrast": 1.0,
+  "theme": "catppuccin-mocha"
+}

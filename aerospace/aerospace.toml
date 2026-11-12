@@ -48,7 +48,7 @@ automatically-unhide-macos-hidden-apps = false
 # run = ['layout floating', 'move-node-to-workspace S']  # The callback itself
 
 # --- Default workspace placement ---
-# 1 = Zen, 2 = Zed, 3 = Ghostty
+# 1 = Zen, 2 = Zed, 3 = Herdr (Ghostty kept as fallback)
 # Fires on newly opened windows. Already-running apps are handled by
 # automation/lib/aerospace-workspaces.sh (used by `cx --open` / `sk --open`).
 [[on-window-detected]]
@@ -58,6 +58,10 @@ run = 'move-node-to-workspace 1'
 [[on-window-detected]]
 if.app-id = 'dev.zed.Zed'
 run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'dev.herdr.app'
+run = 'move-node-to-workspace 3'
 
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
