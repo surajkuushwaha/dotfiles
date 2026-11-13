@@ -116,7 +116,7 @@ exit                                    # reconnect to load zsh + p10k
 
 ### Sync
 
-Re-run `~/Personal/dotfiles/install-linux.sh` any time. It pulls the dotfiles (skipped if there are local changes), upgrades apt packages, updates Neovim/atuin/zellij/fnm when a newer release exists, moves Node to the latest LTS, updates fzf, Oh My Zsh, p10k, zsh and tmux plugins and gh extensions, and re-links config.
+Re-run `~/Personal/dotfiles/install-linux.sh` any time. It pulls the dotfiles (skipped if there are local changes), upgrades apt packages, updates Neovim/atuin/zellij/fnm when a newer release exists, moves Node to the latest LTS (with corepack enabled for pnpm/yarn), updates fzf, Oh My Zsh, p10k, zsh and tmux plugins and gh extensions, and re-links config.
 
 ### GitHub (one account, HTTPS through gh)
 

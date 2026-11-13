@@ -136,6 +136,13 @@ fnm list | grep -q "$node_lts" || fnm install "$node_lts"
 fnm default "$node_lts"
 echo "fnm $(installed_version fnm), Node $node_lts (default)"
 
+step "corepack (pnpm, yarn)"
+# Node 25+ no longer bundles corepack, so install it from npm into the default Node.
+# fnm exec: this shell's fnm PATH may predate the Node just installed.
+fnm exec --using="$node_lts" -- npm install -g --silent corepack@latest
+fnm exec --using="$node_lts" -- corepack enable
+echo "corepack $(fnm exec --using="$node_lts" -- corepack --version)"
+
 step "Oh My Zsh"
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
   # ZSH is set because the installer otherwise picks $ZDOTDIR/ohmyzsh, i.e. this repo.
