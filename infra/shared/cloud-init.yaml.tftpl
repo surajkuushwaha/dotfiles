@@ -26,7 +26,7 @@ runcmd:
   # Tailscale: installed only; run `sudo tailscale up --ssh` after first login
   - curl -fsSL https://tailscale.com/install.sh | sh
 %{ if dotfiles_repo != "" ~}
-  # Dotfiles: clone over HTTPS (no GitHub key on the VM yet), switch origin to SSH,
-  # then run the Linux bootstrap as the user
-  - su - ${username} -c 'git clone ${dotfiles_clone_url} ~/Personal/dotfiles && git -C ~/Personal/dotfiles remote set-url origin ${dotfiles_repo} && ~/Personal/dotfiles/install-linux.sh'
+  # Dotfiles: clone over HTTPS (no GitHub key on the VM yet), run the Linux bootstrap
+  # as the user, then switch origin to SSH (the script's own pull needs HTTPS until gh auth)
+  - su - ${username} -c 'git clone ${dotfiles_clone_url} ~/Personal/dotfiles && ~/Personal/dotfiles/install-linux.sh; git -C ~/Personal/dotfiles remote set-url origin ${dotfiles_repo}'
 %{ endif ~}
