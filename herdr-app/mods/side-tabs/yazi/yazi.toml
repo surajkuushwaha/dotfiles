@@ -1,0 +1,27 @@
+# yazi config for the Herdr side panel only (YAZI_CONFIG_HOME points here).
+# Narrow panel: show only the current folder, no parent or preview column.
+[mgr]
+ratio = [0, 1, 0]
+
+# Opening a file sends it to a new nvim tab in the active Herdr space.
+[opener]
+herdr-nvim = [
+  { run = '"$HERDR_PANEL_DIR/open-in-nvim.sh" "$@"', orphan = true, desc = "Open in nvim (Herdr tab)" },
+]
+
+[open]
+prepend_rules = [
+  { url = "*", use = "herdr-nvim" },
+]
+
+# git.yazi: git status signs next to each file and changed folder
+# (installed with: YAZI_CONFIG_HOME=<this folder> ya pkg add yazi-rs/plugins:git)
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"

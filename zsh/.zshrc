@@ -148,9 +148,7 @@ tmuxcopy() {
 }
 alias tcopy='tmuxcopy'
 
-q() {
-  pi -p "$*"
-}
+q() { opencode run "$*"; }
 
 
 

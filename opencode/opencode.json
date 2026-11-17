@@ -2,4 +2,54 @@
   "$schema": "https://opencode.ai/config.json",
   "model": "opencode/kimi-k2.5",
   "autoupdate": true,
+  "provider": {
+    "openai": {
+      "options": {
+        "baseURL": "http://127.0.0.1:8787/w/opencode/openai/v1"
+      },
+      "models": {
+        "caveman-auto": {
+          "name": "Auto",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "limit": {
+            "context": 872000,
+            "output": 32000
+          }
+        }
+      }
+    },
+    "anthropic": {
+      "options": {
+        "baseURL": "http://127.0.0.1:8787/w/opencode/anthropic/v1"
+      },
+      "models": {
+        "caveman-auto": {
+          "name": "Auto",
+          "reasoning": true,
+          "tool_call": true,
+          "attachment": true,
+          "limit": {
+            "context": 1000000,
+            "output": 32000
+          }
+        }
+      }
+    },
+    "opencode-go": {
+      "options": {
+        "baseURL": "http://127.0.0.1:8787/w/opencode/compat/opencode-go/v1"
+      }
+    }
+  },
+  "mcp": {
+    "caveman": {
+      "type": "local",
+      "command": [
+        "/Users/surajkushwaha/.caveman/bin/caveman-mcp"
+      ],
+      "enabled": true
+    }
+  }
 }

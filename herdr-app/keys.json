@@ -90,5 +90,8 @@
     "cmd-right": "send:\u0005",
     "cmd-backspace": "send:\u0015",
     "alt-c": "send:\u001bc"
+  },
+  "layout:dev": {
+    "cmd-l": "layout.toggle:side-panel"
   }
 }

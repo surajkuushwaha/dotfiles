@@ -1,5 +1,6 @@
 vim.pack.add({
-	{ src = "https://github.com/saghen/blink.cmp", version = "v1", name = "blink.cmp" },
+	-- A release tag (not the v1 branch), so blink downloads its prebuilt fuzzy-matching binary
+	{ src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*"), name = "blink.cmp" },
 })
 
 require("blink.cmp").setup({
