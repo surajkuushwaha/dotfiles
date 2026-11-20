@@ -64,6 +64,7 @@
       },
       "min": 44,
       "max": 480,
+      "hidden": true,
       "background": "chrome",
       "resizable": false
     },
@@ -137,7 +138,7 @@
                       "id": "side-files",
                       "type": "block",
                       "content": {
-                        "terminal": "t5n"
+                        "terminal": "t6g"
                       }
                     },
                     {
@@ -155,7 +156,7 @@
                       }
                     }
                   ],
-                  "active": "side-processes"
+                  "active": "side-files"
                 }
               ],
               "size": {

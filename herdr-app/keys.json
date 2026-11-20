@@ -76,7 +76,9 @@
         ]
       }
     },
-    "cmd-k": "mod.open:cx-features"
+    "cmd-k": "mod.open:cx-features",
+
+"cmd-shift-f": "mod.open:ssh-forward"
   },
   "terminal": {
     "cmd-f": "terminal.search",

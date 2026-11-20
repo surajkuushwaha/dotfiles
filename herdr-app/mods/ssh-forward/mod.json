@@ -1,0 +1,1 @@
+{ "place": "none", "title": "SSH port forward", "overlay": { "kind": "popup", "at": "top", "offset": 40, "width": 460, "height": 320 } }
